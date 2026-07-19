@@ -55,7 +55,6 @@ function DownloadButton({ mobile = false }: { mobile?: boolean }) {
 }
 
 export default function Navbar({ entranceComplete }: NavbarProps) {
-  const [menuOpen, setMenuOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
@@ -71,42 +70,16 @@ export default function Navbar({ entranceComplete }: NavbarProps) {
           <motion.div
             whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.22)' }}
             whileTap={{ scale: 0.98 }}
-            className={`${
-              menuOpen ? 'hidden md:flex' : 'flex'
-            } h-12 px-5 bg-white/15 backdrop-blur-md rounded-[14px] items-center gap-2.5 cursor-pointer`}
+            className="flex h-12 px-5 bg-white/15 backdrop-blur-md rounded-[14px] items-center gap-2.5 cursor-pointer"
           >
             <SynapseXLogo size={18} className="text-white" />
             <span className="text-[16px] font-medium tracking-tight text-white">Dev Club</span>
           </motion.div>
 
-          <motion.div
-            animate={{ width: menuOpen ? 290 : 48 }}
-            transition={menuSpring}
-            className="h-12 rounded-[14px] bg-white/15 backdrop-blur-md flex items-center overflow-hidden"
-          >
-            <button
-              onClick={() => setMenuOpen((v) => !v)}
-              aria-label="Toggle menu"
-              className={`flex items-center justify-center shrink-0 transition-colors ${
-                menuOpen
-                  ? 'w-9 h-9 rounded-[11px] bg-white/10 hover:bg-white/20 ml-1.5'
-                  : 'w-12 h-12 rounded-[14px]'
-              }`}
-            >
-              <SquashHamburger isOpen={menuOpen} />
-            </button>
-            {menuOpen && (
-              <motion.div
-                initial={{ opacity: 0, x: 15 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.35 }}
-                className="flex items-center gap-6 pl-5"
-              >
-                <NavLink label="About" onClick={() => scrollToSection(1)} />
-                <NavLink label="Metrics" onClick={() => scrollToSection(2)} />
-              </motion.div>
-            )}
-          </motion.div>
+          <div className="h-12 px-5 rounded-[14px] bg-white/15 backdrop-blur-md flex items-center gap-6">
+            <NavLink label="About" onClick={() => scrollToSection(1)} />
+            <NavLink label="Metrics" onClick={() => scrollToSection(2)} />
+          </div>
         </div>
 
         <DownloadButton />
