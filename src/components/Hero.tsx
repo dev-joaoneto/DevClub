@@ -112,7 +112,11 @@ export default function Hero({ entranceComplete }: HeroProps) {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative h-screen h-[100dvh] overflow-hidden bg-black">
+    <section
+      id="hero"
+      ref={sectionRef}
+      className="relative h-screen h-[100dvh] overflow-hidden bg-black"
+    >
       <video
         ref={videoRef}
         src={HERO_VIDEO}

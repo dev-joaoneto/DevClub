@@ -144,3 +144,28 @@ Antes o H1/subtexto/CTA e o carrossel viviam no mesmo fluxo flex (um `flex-1` em
 O `mix-blend-mode: overlay` do grain (rodada 3) criava um retângulo com luminância levemente diferente do resto do Hero — exatamente o "container claro" que você viu. Removido. No lugar entrou um `backdrop-blur-2xl` com fade vertical suave (`mask-image` topo/base), que borra o vídeo (e a perna do robô) atrás da faixa inteira do carrossel sem introduzir nenhuma borda visível — a diferença é que ele borra o que já está lá, não sobrepõe uma textura nova com brilho próprio.
 
 Testado desktop e mobile: sem retângulo visível, pernas do robô borradas atrás do texto, textos legíveis, build/typecheck limpos.
+
+# Redesenho — rodada 6 (Reader Soberano → Navbar)
+
+Porte completo do header flutuante do DGX Visual Foundry (specimen `dgx-sovereign-armor--v1`) pro `Navbar.tsx`, a partir do handoff em [HEADER-HANDOFF.md](HEADER-HANDOFF.md) e leitura direta do código-fonte (`reader.css`/`reader.js`) em `~/Workspace/DGX-LABS/dgx-visual-foundry/specimens/dgx-sovereign-armor--v1/`.
+
+## Decisões de adaptação (não é cópia 1:1)
+
+- **Mega-menu de ecossistema removido.** O lab tinha dois painéis: nav-da-página e um grid 2×2 de "outras páginas do ecossistema" (Marketplace, CoreBR, Digytron OS, Digytron Account). O DevClub é uma landing single-page sem ecossistema de produtos — portar esse grid significaria inventar cards falsos linkando pra produtos de outra empresa dentro do site de um cliente. Consolidei pra **um único dropdown** (nav de seções desta página), usado tanto pela setinha ▾ (sempre visível) quanto — antes de eu perceber a duplicação — por um segundo botão que existia só pra mobile. Removi esse segundo botão: como os dois abriam o mesmo painel agora, ficavam duas setinhas idênticas lado a lado no mobile expandido. A setinha ▾ sozinha já cobre mobile e desktop, compacto e expandido.
+- **Achado lendo o JS bruto, não só o handoff**: `openPeek()` existe no `reader.js` original mas **nunca é chamado** em lugar nenhum — o "peek por clique na pílula compacta" que o handoff descreve como comportamento ativo está morto no código-fonte atual (resíduo de quando existia hover-peek, removido numa versão anterior). Implementei o gatilho de verdade (clique no fundo vazio da pílula, fora dos botões/links) já que é claramente a intenção documentada tanto no handoff quanto nos comentários do próprio `reader.js`.
+- **Cores**: troquei o azul metálico (`#16235c→#2a46c4`) pelo verde já usado no resto do DevClub (`#1f4736→#6ee7a0`, mesmo tom dos avatares do Hero) em vez do verde genérico que o handoff sugeriu (`#16a34a`) — mantém o CTA do header na mesma linguagem visual do resto da página. Texto do CTA foi pra preto (`#06170e`) em vez de branco, porque o meio do gradiente é um verde claro (`#6ee7a0`) e branco-sobre-claro teria contraste ruim — segue o mesmo padrão que o `AngledButton` (solid) já usa no Hero.
+- **Logo**: `Logo.tsx` (SVG `currentColor`) no lugar do `<img>` do lab — o tilt 3D funciona igual porque aplica no elemento wrapper, não no SVG.
+- **Links de seção**: reaproveitei só os `id`s que já existiam (`about`, `platform`, `metrics`, `certifications`, `guarantee` — 5 seções), com rótulos batendo com o conteúdo real (Comunidade, Plataforma, Mercado, Certificados, Garantia). Não criei `id` novo em nenhuma seção pra não expandir escopo sem necessidade.
+- **CTA**: "Quero Fazer Parte ↗" apontando pra `#guarantee`, mesmo destino do CTA principal do Hero — consistência de funil.
+- Adicionei `id="hero"` na section do Hero (não existia) pra o logo poder linkar de volta pro topo, igual ao lab.
+
+## Arquitetura do porte
+
+- `src/components/reader.css` — CSS praticamente 1:1 do original (mesmas transitions/timing functions/curvas), só cores trocadas e o mega-menu de ecossistema cortado. Comentário no topo aponta de volta pro handoff.
+- `src/components/Navbar.tsx` — reimplementação em React/hooks de toda a lógica do `reader.js`: scroll listener (progresso + wake), `IntersectionObserver` pra seção ativa, dropdown com hover-intent (450ms grace) + click-to-pin + mensagem de trava/destrava, peek, fechar por clique-fora/Escape, tilt 3D + glint via manipulação direta de `style.setProperty` no `pointermove` (fora do ciclo de render do React, por performance — igual ao original).
+
+## Bug pego durante o teste (não é do componente, é do dev server)
+
+Cliques por coordenada de pixel erravam o alvo logo após o clique no ▾ — a pílula tem `transition: padding/gap .4s`, e medir a posição do botão e clicar são dois momentos diferentes; no meio do caminho o layout ainda está animando. Não é bug do componente, é uma pegadinha de teste (mudei pra clicar via `elemento.click()` direto, que não depende de coordenada). Separadamente, o servidor de dev desta sessão tem HMR historicamente instável (já visto em rodadas anteriores) — um hard reload resolveu um falso-negativo onde o clique no botão não abria o painel.
+
+Testado desktop e mobile: estado compacto/expandido, seção ativa acendendo no scroll, dropdown abrindo/travando/destravando com mensagem, peek, fechar por clique-fora, tilt 3D, scroll suave até cada seção, build/typecheck limpos.
