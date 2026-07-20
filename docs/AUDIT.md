@@ -97,3 +97,14 @@ Instalado `simple-icons` (16.27.0) pra pegar os marks oficiais. Cobertura real:
 `Uber` no `simple-icons` é o wordmark inteiro (as letras "Uber" já desenhadas como path), não um símbolo separado. Como o componente sempre pareava ícone + nome de texto, renderizou "Uber Uber" duplicado. Corrigido tratando Uber como caso especial: só o SVG (escalado pra altura do texto), sem o `<span>` de nome ao lado. Testado visualmente na marquee rodando — sem duplicação.
 
 Testado: build limpo, typecheck limpo, sem overflow/corte no Hero em desktop nem mobile (812px de altura), hover pausa a marquee e troca pra verde (`#6ee7a0`), igual ao padrão já usado na marquee da SocialProof.
+
+# Redesenho — rodada 3 (ajuste fino do carrossel + navbar vazia)
+
+## Navbar
+
+Removidos os dois elementos que sobravam: a pill "Dev Club" e o botão "Download" (Apple). `Navbar.tsx` agora renderiza um `<nav>` fixo vazio (mantém o slot pra quando definirem o que entra ali). `AppleLogo.tsx` foi deletado por ficar sem nenhum uso (só existia pro ícone do botão Download).
+
+## Carrossel do Hero (`HeroSponsors`)
+
+- **Pausa no hover removida**: antes o `group-hover:[animation-play-state:paused]` parava a marquee ao passar o mouse — tirado. Agora ela roda infinito, sem nenhuma interrupção por pointer. Testado via `getComputedStyle().animationPlayState` com cursor em cima: fica `running`.
+- **Aspecto "rústico envelhecido"**: minha leitura do print de referência foi que não é logo craquelada/distressed, é textura de grão (grain) + o logo se misturando com o fundo escuro (baixo contraste), não um vetor flat e limpo. Implementei uma camada de ruído (`feTurbulence` via SVG data-URI, `mix-blend-mode: overlay`, opacidade 0.07) por cima da faixa inteira do carrossel — textura sutil, não destrutiva, não compromete legibilidade. Mantive os ícones/texto como já estavam (branco a 40% de opacidade, sobe pra verde no hover). Se a ideia era algo mais literal (bordas gastas, rachaduras no próprio logo), é um trabalho bem mais pesado por ícone — avisa que eu ajusto a intensidade ou troco de abordagem.
