@@ -195,3 +195,11 @@ O badge "+30 mil alunos já passaram por aqui" tinha ido pro header na rodada 7 
 Movido de `Navbar.tsx` pra dentro do `Hero.tsx`, como elemento `absolute` (não `fixed`) dentro da própria `<section id="hero">`. CSS `.reader-trust*` removido do `reader.css` — a implementação virou Tailwind direto no `Hero.tsx`, reaproveitando o `CountUp`.
 
 Confirmado via `getComputedStyle`: o Reader continua `position:fixed` (`top:20` constante, não se move com o scroll); o badge é `position:absolute` (rolou pra `top:-826` depois de um scroll de ~800px — sai de cena junto com o resto do Hero, como pedido).
+
+# Redesenho — rodada 9 (badge sai da linha do header, centraliza abaixo dos botões)
+
+Ainda errado na rodada 8: mesmo já sendo `absolute` (não mais `fixed`), o badge continuava visualmente na mesma linha do header (`top-5`, canto direito) — o pedido real era centralizado no viewport, logo abaixo do bloco de CTAs.
+
+Em vez de chutar um `top-[N%]` (frágil — a altura do H1+parágrafo+botões varia por breakpoint e quebra de linha), medi a posição real: `buttonsRef` no bloco de CTAs + `ResizeObserver` recalculando `buttons.getBoundingClientRect().bottom - section.getBoundingClientRect().top + 24px` a cada resize. O badge usa esse valor como `top` e `left-1/2 -translate-x-1/2` pra centralizar no viewport (mesmo eixo do Reader). Mesma técnica já usada no patch que esconde o watermark do vídeo — não inventei mecanismo novo.
+
+Badge agora aparece em mobile e desktop (antes só ≥640px). Testado nos dois: aterrissa exatamente colado no botão "Soluções"/fileira de CTAs, centralizado, sem depender de porcentagem chutada. `position:absolute` confirmado (sai de cena com o Hero).

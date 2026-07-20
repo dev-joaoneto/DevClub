@@ -38,7 +38,9 @@ interface HeroProps {
 export default function Hero({ entranceComplete }: HeroProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const sectionRef = useRef<HTMLElement>(null)
+  const buttonsRef = useRef<HTMLDivElement>(null)
   const [patch, setPatch] = useState({ left: 0, top: 0, size: 0 })
+  const [trustTop, setTrustTop] = useState<number | null>(null)
 
   // Head follows the cursor: mouse X -> head-turn segment of the timeline,
   // smoothed through a framer-motion spring for a light, natural follow
@@ -118,6 +120,28 @@ export default function Hero({ entranceComplete }: HeroProps) {
     return () => window.removeEventListener('resize', compute)
   }, [])
 
+  // Trust badge sits centered, just below the CTA row — measured against the
+  // real rendered height of the headline block instead of a guessed top-%,
+  // so it holds up across every breakpoint and font-wrap.
+  useEffect(() => {
+    const compute = () => {
+      const section = sectionRef.current
+      const buttons = buttonsRef.current
+      if (!section || !buttons) return
+      const sectionTop = section.getBoundingClientRect().top
+      const buttonsBottom = buttons.getBoundingClientRect().bottom
+      setTrustTop(buttonsBottom - sectionTop + 24)
+    }
+    compute()
+    const ro = new ResizeObserver(compute)
+    if (buttonsRef.current) ro.observe(buttonsRef.current)
+    window.addEventListener('resize', compute)
+    return () => {
+      ro.disconnect()
+      window.removeEventListener('resize', compute)
+    }
+  }, [])
+
   return (
     <section
       id="hero"
@@ -185,6 +209,7 @@ export default function Hero({ entranceComplete }: HeroProps) {
         </motion.p>
 
         <motion.div
+          ref={buttonsRef}
           initial={{ opacity: 0, y: 25 }}
           animate={entranceComplete ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.9, ease: [0.215, 0.61, 0.355, 1.0], delay: 0.35 }}
@@ -200,12 +225,14 @@ export default function Hero({ entranceComplete }: HeroProps) {
       </motion.div>
 
       {/* Trust badge — pinned to this section only, scrolls away with the Hero
-          (not fixed like the Navbar/Reader — stays put in its corner) */}
+          (not fixed like the Navbar/Reader). Centered in the viewport, just
+          below the CTA row — not up on the header's row. */}
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: entranceComplete ? 1 : 0 }}
+        animate={{ opacity: entranceComplete && trustTop !== null ? 1 : 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="hidden sm:inline-flex absolute top-5 right-4 sm:right-6 md:right-8 z-10 items-center gap-2.5 border border-white/10 bg-white/[0.04] backdrop-blur-md rounded-full pl-2 pr-4 py-1.5"
+        className="absolute left-1/2 -translate-x-1/2 z-10 inline-flex items-center gap-2.5 border border-white/10 bg-white/[0.04] backdrop-blur-md rounded-full pl-2 pr-4 py-1.5 whitespace-nowrap"
+        style={{ top: trustTop ?? 0 }}
       >
         <div className="flex pl-1.5">
           {TRUST_AVATARS.map(([initials, from, to]) => (
