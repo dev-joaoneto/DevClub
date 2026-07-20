@@ -4,7 +4,14 @@ import { Zap } from 'lucide-react'
 import ScrambleIn from './ScrambleIn'
 import AngledButton from './AngledButton'
 import HeroSponsors from './HeroSponsors'
+import CountUp from './CountUp'
 import { scrollToId } from '../lib/scrollTo'
+
+const TRUST_AVATARS: [string, string, string][] = [
+  ['RB', '#1f4736', '#6ee7a0'],
+  ['TS', '#243447', '#7fb4e8'],
+  ['GA', '#43302a', '#e8a97f'],
+]
 
 const HERO_VIDEO = '/hero-robot.mp4'
 
@@ -190,6 +197,30 @@ export default function Hero({ entranceComplete }: HeroProps) {
             Soluções
           </AngledButton>
         </motion.div>
+      </motion.div>
+
+      {/* Trust badge — pinned to this section only, scrolls away with the Hero
+          (not fixed like the Navbar/Reader — stays put in its corner) */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: entranceComplete ? 1 : 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="hidden sm:inline-flex absolute top-5 right-4 sm:right-6 md:right-8 z-10 items-center gap-2.5 border border-white/10 bg-white/[0.04] backdrop-blur-md rounded-full pl-2 pr-4 py-1.5"
+      >
+        <div className="flex pl-1.5">
+          {TRUST_AVATARS.map(([initials, from, to]) => (
+            <span
+              key={initials}
+              className="w-[26px] h-[26px] -ml-2 rounded-full border-2 border-black flex items-center justify-center text-[9px] font-bold text-white/90"
+              style={{ background: `linear-gradient(135deg, ${from}, ${to})` }}
+            >
+              {initials}
+            </span>
+          ))}
+        </div>
+        <span className="text-[12.5px] text-white/70 font-medium whitespace-nowrap">
+          +<CountUp to={30} /> mil alunos já passaram por aqui
+        </span>
       </motion.div>
 
       {/* Sponsor carousel — flush with the Hero's bottom edge, touching the fold with SocialProof */}

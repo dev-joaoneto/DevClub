@@ -187,3 +187,11 @@ Removidos: H2 ("+25 mil alunos já passaram por aqui"), parágrafo ("Alunos nas 
 CSS órfão limpo: `.marquee-track`/`@keyframes marquee` (30s) não tinha mais nenhum uso depois da marquee antiga sair — removido de `index.css` (ficou só `.hero-marquee-track`, que reaproveita o mesmo `@keyframes marquee`).
 
 Testado desktop e mobile: logo nítida em 26-34px, badge só aparece ≥640px, tilt funcionando, build/typecheck limpos.
+
+# Redesenho — rodada 8 (badge de confiança sai do header, vira estático no Hero)
+
+O badge "+30 mil alunos já passaram por aqui" tinha ido pro header na rodada 7 como `position:fixed` — rolava junto com a página igual ao Reader. Não era essa a intenção: ele devia ficar preso ao Hero (bloco 1), estático no canto, saindo de cena ao rolar — só o Reader (nav central) é fixo de verdade.
+
+Movido de `Navbar.tsx` pra dentro do `Hero.tsx`, como elemento `absolute` (não `fixed`) dentro da própria `<section id="hero">`. CSS `.reader-trust*` removido do `reader.css` — a implementação virou Tailwind direto no `Hero.tsx`, reaproveitando o `CountUp`.
+
+Confirmado via `getComputedStyle`: o Reader continua `position:fixed` (`top:20` constante, não se move com o scroll); o badge é `position:absolute` (rolou pra `top:-826` depois de um scroll de ~800px — sai de cena junto com o resto do Hero, como pedido).
