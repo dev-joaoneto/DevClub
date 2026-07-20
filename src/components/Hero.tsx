@@ -3,6 +3,7 @@ import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { Zap } from 'lucide-react'
 import ScrambleIn from './ScrambleIn'
 import AngledButton from './AngledButton'
+import HeroSponsors from './HeroSponsors'
 import { scrollToId } from '../lib/scrollTo'
 
 const HERO_VIDEO = '/hero-robot.mp4'
@@ -187,35 +188,16 @@ export default function Hero({ entranceComplete }: HeroProps) {
               Soluções
             </AngledButton>
           </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 25 }}
-            animate={entranceComplete ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.9, ease: [0.215, 0.61, 0.355, 1.0], delay: 0.5 }}
-            className="flex items-center gap-3 mt-1"
-          >
-            <div className="flex pl-2">
-              {[
-                ['MR', '#1f4736', '#6ee7a0'],
-                ['AC', '#243447', '#7fb4e8'],
-                ['JS', '#43302a', '#e8a97f'],
-                ['LP', '#3a2a43', '#c77fe8'],
-              ].map(([initials, from, to]) => (
-                <span
-                  key={initials}
-                  className="w-8 h-8 -ml-2 rounded-full border-2 border-black flex items-center justify-center text-[9px] font-bold text-white/90"
-                  style={{ background: `linear-gradient(135deg, ${from}, ${to})` }}
-                >
-                  {initials}
-                </span>
-              ))}
-            </div>
-            <p className="text-[12px] sm:text-[13px] text-white/50 leading-snug max-w-xs">
-              Confiado por milhares de profissionais em{' '}
-              <span className="text-white/80">4.578 cargos diferentes</span>.
-            </p>
-          </motion.div>
         </div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={entranceComplete ? { opacity: 1 } : {}}
+          transition={{ duration: 1, delay: 0.6 }}
+          className="mt-10 sm:mt-12 -mx-4 sm:-mx-6 md:-mx-8"
+        >
+          <HeroSponsors />
+        </motion.div>
       </motion.div>
     </section>
   )

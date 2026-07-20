@@ -69,3 +69,31 @@ Sem mexer em copy — só motion:
 ## Nav
 
 Removidos os links "About"/"Metrics" (ficavam presos atrás de interação extra sem necessidade). Nav ficou só Logo + Download, igual em desktop e mobile — o hambúrguer mobile também saiu junto (não sobrava nada pra ele revelar). `SquashHamburger.tsx` foi deletado por ficar sem uso.
+
+# Redesenho — rodada 2 (trust badge do Hero → carrossel de patrocinadores)
+
+Removido o bloco "Confiado por milhares de profissionais em 4.578 cargos diferentes" (avatares MR/AC/JS/LP + texto) do Hero. No lugar entrou `HeroSponsors.tsx`: um carrossel full-bleed, texto grande (26-40px), ícone de marca + nome, vivendo dentro do Hero (não mais na SocialProof).
+
+**Os 9 patrocinadores finais** (lista fechada pelo Dyllan): Claude, ChatGPT, Grok, Kimi, Facebook, Instagram, WhatsApp, iFood, Uber.
+
+## Ícones de marca
+
+Instalado `simple-icons` (16.27.0) pra pegar os marks oficiais. Cobertura real:
+
+| Marca | Fonte do ícone | Observação |
+|---|---|---|
+| Claude | `simple-icons` (siClaude) | mark oficial |
+| Kimi | `simple-icons` (siKimi) | mark oficial |
+| Facebook | `simple-icons` (siFacebook) | mark oficial |
+| Instagram | `simple-icons` (siInstagram) | mark oficial |
+| WhatsApp | `simple-icons` (siWhatsapp) | mark oficial |
+| iFood | `simple-icons` (siIfood) | mark oficial |
+| Uber | `simple-icons` (siUber) | é o wordmark "Uber" em si (a marca não tem símbolo isolado) — por isso não repito o nome do lado, só o SVG na altura do texto (ver bug abaixo) |
+| ChatGPT | path do logomark clássico da OpenAI, de memória (não está mais no `simple-icons` — a OpenAI pediu remoção por política de marca) | **verificar contra o brand kit oficial antes de qualquer publicação real** |
+| Grok | glifo genérico (`Sparkle` do lucide-react) | xAI/Grok não tem mark em nenhuma lib que eu confiasse; não fabriquei um logo falso |
+
+## Bug pego e corrigido nessa rodada
+
+`Uber` no `simple-icons` é o wordmark inteiro (as letras "Uber" já desenhadas como path), não um símbolo separado. Como o componente sempre pareava ícone + nome de texto, renderizou "Uber Uber" duplicado. Corrigido tratando Uber como caso especial: só o SVG (escalado pra altura do texto), sem o `<span>` de nome ao lado. Testado visualmente na marquee rodando — sem duplicação.
+
+Testado: build limpo, typecheck limpo, sem overflow/corte no Hero em desktop nem mobile (812px de altura), hover pausa a marquee e troca pra verde (`#6ee7a0`), igual ao padrão já usado na marquee da SocialProof.
