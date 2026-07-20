@@ -1,4 +1,3 @@
-import { Sparkle } from 'lucide-react'
 import { SPONSOR_ICONS } from '../lib/sponsorIcons'
 
 const SPONSORS = [
@@ -15,24 +14,42 @@ const SPONSORS = [
 
 // Uber's simple-icons mark is the wordmark itself ("Uber" spelled out),
 // not a standalone glyph — pairing it with a text label would read as "Uber Uber".
-const WORDMARK_ONLY = new Set(['Uber'])
+// Its glyph only fills the middle third of the 24x24 viewBox, so it's cropped
+// tight and sized to match the text height of its neighbors, not icon height.
+const WORDMARK: Record<string, { viewBox: string }> = {
+  Uber: { viewBox: '0 7.9 24 8.2' },
+}
+
+// Kimi's mark has a small accent dot top-right and its main swoosh sitting low
+// in the box — geometric centering reads as "floating" above the text baseline.
+const ICON_NUDGE: Record<string, string> = {
+  Kimi: 'translate-y-[3px] sm:translate-y-[4px]',
+}
 
 const GRAIN_URL =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'%3E%3C/feTurbulence%3E%3CfeColorMatrix type='saturate' values='0'%3E%3C/feColorMatrix%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'%3E%3C/rect%3E%3C/svg%3E\")"
 
 function SponsorIcon({ name }: { name: string }) {
   const icon = SPONSOR_ICONS[name.toLowerCase()]
-  const isWordmark = WORDMARK_ONLY.has(name)
-  const className = isWordmark
-    ? 'h-[24px] sm:h-[30px] md:h-[36px] w-auto shrink-0'
-    : 'w-6 h-6 sm:w-8 sm:h-8 shrink-0'
+  if (!icon) return null
 
-  if (!icon) {
-    return <Sparkle className={className} strokeWidth={1.6} />
-  }
+  const wordmark = WORDMARK[name]
+  const className = [
+    wordmark
+      ? 'h-[26px] sm:h-[34px] md:h-[40px] w-auto shrink-0'
+      : 'w-6 h-6 sm:w-8 sm:h-8 shrink-0',
+    ICON_NUDGE[name] ?? '',
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+    <svg
+      viewBox={wordmark?.viewBox ?? '0 0 24 24'}
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
       <path d={icon.path} />
     </svg>
   )
@@ -61,7 +78,7 @@ export default function HeroSponsors() {
             className="flex items-center gap-3 sm:gap-4 text-white/40 hover:text-[#6ee7a0] transition-colors duration-300 cursor-default"
           >
             <SponsorIcon name={name} />
-            {!WORDMARK_ONLY.has(name) && (
+            {!WORDMARK[name] && (
               <span className="text-[26px] sm:text-[34px] md:text-[40px] font-semibold tracking-tight whitespace-nowrap">
                 {name}
               </span>

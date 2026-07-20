@@ -143,7 +143,7 @@ export default function Hero({ entranceComplete }: HeroProps) {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.72) 30%, rgba(0,0,0,0.28) 58%, rgba(0,0,0,0) 78%), linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 32%), linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 18%)',
+            'linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.72) 30%, rgba(0,0,0,0.28) 58%, rgba(0,0,0,0) 78%), linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0) 36%), linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 18%)',
         }}
       />
 

@@ -108,3 +108,20 @@ Removidos os dois elementos que sobravam: a pill "Dev Club" e o botão "Download
 
 - **Pausa no hover removida**: antes o `group-hover:[animation-play-state:paused]` parava a marquee ao passar o mouse — tirado. Agora ela roda infinito, sem nenhuma interrupção por pointer. Testado via `getComputedStyle().animationPlayState` com cursor em cima: fica `running`.
 - **Aspecto "rústico envelhecido"**: minha leitura do print de referência foi que não é logo craquelada/distressed, é textura de grão (grain) + o logo se misturando com o fundo escuro (baixo contraste), não um vetor flat e limpo. Implementei uma camada de ruído (`feTurbulence` via SVG data-URI, `mix-blend-mode: overlay`, opacidade 0.07) por cima da faixa inteira do carrossel — textura sutil, não destrutiva, não compromete legibilidade. Mantive os ícones/texto como já estavam (branco a 40% de opacidade, sobe pra verde no hover). Se a ideia era algo mais literal (bordas gastas, rachaduras no próprio logo), é um trabalho bem mais pesado por ícone — avisa que eu ajusto a intensidade ou troco de abordagem.
+
+# Redesenho — rodada 4 (ajuste fino de ícones + transição Hero→SocialProof)
+
+## Ícones do carrossel
+
+- **Uber minúsculo**: medi o bounding box real do path via `getBBox()` no browser — o glifo do wordmark "Uber" só ocupa 8 de 24 unidades de altura do viewBox (33%), o resto é espaço vazio. Por isso, mesmo com a caixa do SVG no tamanho certo, o texto renderizava bem menor que os vizinhos. Corrigido recortando o `viewBox` pro bounding box real (`0 7.9 24 8.2`) e igualando a altura à dos textos ao lado (26/34/40px) — agora "Uber" tem o mesmo peso visual que "iFood", "WhatsApp" etc.
+- **Kimi desalinhado**: mesmo método (`getBBox()`) — o ícone tem um pontinho pequeno no canto superior direito e o corpo principal (a seta) concentrado na metade inferior da caixa. Centralização geométrica (a que o flexbox faz por padrão) não bate com o centro visual/óptico do desenho, então o ícone "flutuava" acima da linha do texto. Apliquei um nudge de `translate-y-[3px] sm:translate-y-[4px]` só nesse ícone pra compensar.
+- **Ícone genérico do Grok removido**: não tínhamos mark oficial (documentado na rodada 2), o fallback `Sparkle` do lucide ficava lá só pra preencher espaço e parecia um ícone de IA genérico sem sentido. Tirado — Grok agora é só o texto, igual seria se nenhum ícone fosse encontrado (comportamento generalizado: sem ícone confiável = sem ícone, não mais fallback).
+
+## Transição Hero → SocialProof
+
+Duas causas reais do "corte" percebido, corrigidas sem recorrer a blur:
+
+1. **Descontinuidade de brilho na costura**: o scrim do Hero parava em 85% de opacidade preta no rodapé (`rgba(0,0,0,0.85)` no gradiente `0deg`), não 100% — sobrava uma fatia de vídeo/glow visível bem na linha onde a seção seguinte (preto sólido `#000`) começa. Subi pra `rgba(0,0,0,1)` logo nos primeiros 10% do gradiente, eliminando o salto de brilho no pixel exato da costura.
+2. **Falta de continuidade atmosférica**: as duas seções eram tratadas como blocos isolados (Hero com vídeo+glow, SocialProof preto chapado). Adicionei um glow verde radial, bem sutil (opacity 0.2, blur 100px), posicionado dentro da `SocialProof` com `top` negativo — ele vaza visualmente por cima do fim do Hero (por isso removi o `overflow-hidden` da `section` da SocialProof, que era redundante já que a marquee interna tem o seu próprio). Isso cria uma "ponte" de luz ambiente entre as duas seções em vez de um corte seco, e ecoa o verde de destaque que já aparece em outras seções (Benefits, AISection, Certifications) — reforça que é uma linguagem visual do site, não um efeito isolado.
+
+Testado desktop e mobile: sem linha visível na costura, glow sutil (não chamativo), build/typecheck limpos.
