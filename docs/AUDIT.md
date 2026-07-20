@@ -125,3 +125,22 @@ Duas causas reais do "corte" percebido, corrigidas sem recorrer a blur:
 2. **Falta de continuidade atmosférica**: as duas seções eram tratadas como blocos isolados (Hero com vídeo+glow, SocialProof preto chapado). Adicionei um glow verde radial, bem sutil (opacity 0.2, blur 100px), posicionado dentro da `SocialProof` com `top` negativo — ele vaza visualmente por cima do fim do Hero (por isso removi o `overflow-hidden` da `section` da SocialProof, que era redundante já que a marquee interna tem o seu próprio). Isso cria uma "ponte" de luz ambiente entre as duas seções em vez de um corte seco, e ecoa o verde de destaque que já aparece em outras seções (Benefits, AISection, Certifications) — reforça que é uma linguagem visual do site, não um efeito isolado.
 
 Testado desktop e mobile: sem linha visível na costura, glow sutil (não chamativo), build/typecheck limpos.
+
+# Redesenho — rodada 5 (recomposição do Hero: altura, escala, blur nas pernas)
+
+## Bloco de headline sobe pra altura do queixo
+
+Antes o H1/subtexto/CTA e o carrossel viviam no mesmo fluxo flex (um `flex-1` empurrava tudo pro rodapé). Agora são dois blocos posicionados de forma independente, ambos `absolute` dentro da `section` do Hero:
+
+- Headline (H1 + parágrafo + botões): `top-[26%]` no mobile, `top-[20%]` no desktop — foi calibrado visualmente contra o vídeo do robô, não é uma métrica exata do frame (não temos as coordenadas do queixo como temos do watermark), então pode precisar de ajuste fino se o enquadramento do vídeo mudar.
+- Carrossel: `absolute inset-x-0 bottom-0`, colado na borda inferior da section — é literalmente a dobra com a `SocialProof`, sem padding residual entre os dois.
+
+## Carrossel +25%
+
+Ícones (24/32px → 30/40px), texto (26/34/40px → 33/43/50px), gaps entre ícone+texto e entre itens — tudo escalado em 25%. A duração da animação da marquee subiu de 38s pra 46s pra manter a velocidade percebida parecida (conteúdo ~25% mais largo, senão ela pareceria acelerar).
+
+## "Container claro" — era o grain, virou blur
+
+O `mix-blend-mode: overlay` do grain (rodada 3) criava um retângulo com luminância levemente diferente do resto do Hero — exatamente o "container claro" que você viu. Removido. No lugar entrou um `backdrop-blur-2xl` com fade vertical suave (`mask-image` topo/base), que borra o vídeo (e a perna do robô) atrás da faixa inteira do carrossel sem introduzir nenhuma borda visível — a diferença é que ele borra o que já está lá, não sobrepõe uma textura nova com brilho próprio.
+
+Testado desktop e mobile: sem retângulo visível, pernas do robô borradas atrás do texto, textos legíveis, build/typecheck limpos.

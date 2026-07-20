@@ -147,57 +147,55 @@ export default function Hero({ entranceComplete }: HeroProps) {
         }}
       />
 
-      {/* Content */}
+      {/* Content — headline block sits around the robot's chin height, independent
+          from the sponsor carousel which is pinned to the very bottom edge */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: entranceComplete ? 1 : 0 }}
         transition={{ duration: 1 }}
-        className="relative z-10 flex flex-col h-full px-4 sm:px-6 md:px-8 pt-20 sm:pt-24 pb-8 sm:pb-12"
+        className="absolute left-4 right-4 sm:left-6 sm:right-6 md:left-8 md:right-8 top-[26%] sm:top-[20%] z-10 flex flex-col gap-5 max-w-2xl"
       >
-        <div className="flex-1" />
+        <h1 className="text-white font-light leading-[1.02] tracking-[-0.03em] text-[clamp(32px,6.5vw,72px)]">
+          <ScrambleIn text="Tudo o que você" delay={200} triggered={entranceComplete} />
+          <br />
+          <ScrambleIn text="precisa de IA," delay={450} triggered={entranceComplete} />
+          <br />
+          <ScrambleIn text="em um só lugar" delay={700} triggered={entranceComplete} />
+        </h1>
 
-        <div className="flex flex-col gap-5 max-w-2xl">
-          <h1 className="text-white font-light leading-[1.02] tracking-[-0.03em] text-[clamp(32px,6.5vw,72px)]">
-            <ScrambleIn text="Tudo o que você" delay={200} triggered={entranceComplete} />
-            <br />
-            <ScrambleIn text="precisa de IA," delay={450} triggered={entranceComplete} />
-            <br />
-            <ScrambleIn text="em um só lugar" delay={700} triggered={entranceComplete} />
-          </h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 25 }}
-            animate={entranceComplete ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.9, ease: [0.215, 0.61, 0.355, 1.0], delay: 0.2 }}
-            className="max-w-md text-[13px] sm:text-[15px] text-white/60 leading-relaxed"
-          >
-            As melhores IAs, os cursos mais práticos e a newsletter mais completa — dentro de uma
-            única assinatura.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 25 }}
-            animate={entranceComplete ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.9, ease: [0.215, 0.61, 0.355, 1.0], delay: 0.35 }}
-            className="flex flex-wrap items-center gap-3"
-          >
-            <AngledButton onClick={() => scrollToId('guarantee')} icon={<Zap size={14} fill="currentColor" />}>
-              Quero Fazer Parte
-            </AngledButton>
-            <AngledButton onClick={() => scrollToId('platform')} variant="outline">
-              Soluções
-            </AngledButton>
-          </motion.div>
-        </div>
+        <motion.p
+          initial={{ opacity: 0, y: 25 }}
+          animate={entranceComplete ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.9, ease: [0.215, 0.61, 0.355, 1.0], delay: 0.2 }}
+          className="max-w-md text-[13px] sm:text-[15px] text-white/60 leading-relaxed"
+        >
+          As melhores IAs, os cursos mais práticos e a newsletter mais completa — dentro de uma
+          única assinatura.
+        </motion.p>
 
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={entranceComplete ? { opacity: 1 } : {}}
-          transition={{ duration: 1, delay: 0.6 }}
-          className="mt-10 sm:mt-12 -mx-4 sm:-mx-6 md:-mx-8"
+          initial={{ opacity: 0, y: 25 }}
+          animate={entranceComplete ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.9, ease: [0.215, 0.61, 0.355, 1.0], delay: 0.35 }}
+          className="flex flex-wrap items-center gap-3"
         >
-          <HeroSponsors />
+          <AngledButton onClick={() => scrollToId('guarantee')} icon={<Zap size={14} fill="currentColor" />}>
+            Quero Fazer Parte
+          </AngledButton>
+          <AngledButton onClick={() => scrollToId('platform')} variant="outline">
+            Soluções
+          </AngledButton>
         </motion.div>
+      </motion.div>
+
+      {/* Sponsor carousel — flush with the Hero's bottom edge, touching the fold with SocialProof */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={entranceComplete ? { opacity: 1 } : {}}
+        transition={{ duration: 1, delay: 0.6 }}
+        className="absolute inset-x-0 bottom-0 z-10"
+      >
+        <HeroSponsors />
       </motion.div>
     </section>
   )
