@@ -36,3 +36,36 @@ Me manda os dois quando tiver e eu conecto.
 Nenhum arquivo está grande o suficiente hoje pra justificar quebrar (`Hero.tsx` é o maior, ~250 linhas, mas é coeso — video head-tracking, watermark patch e o JSX de conteúdo são as três responsabilidades e cada uma já está isolada em seu próprio `useEffect`). Se `Hero.tsx` crescer mais no redesenho, os dois `useEffect` de tracking/watermark são candidatos naturais a virar hooks próprios (`useHeadTrackingVideo`, `useWatermarkPatch`).
 
 Resto dos componentes são seções isoladas, sem estado compartilhado, cada um com uma responsabilidade única — não há necessidade de decompor agora.
+
+# Redesenho — rodada 1 (Hero + SocialProof)
+
+Não é auditoria de bug, é registro de decisão de design pra não perder o porquê depois.
+
+## Pesquisa: cor de marca real da Dev Club
+
+O verde usado no site inteiro (`#6ee7a0`, mint suave) veio de copiar a paleta da Asimov Academy (referência de estilo do briefing), não é a cor real da Dev Club. Confirmado visitando a loja oficial ([loja.devclub.com.br](https://loja.devclub.com.br)) e o merch ("DevClub New Green"): a marca usa um **verde-limão neon** (tipo chartreuse), bem mais vibrante, junto de preto/branco e tipografia condensada bold — estética mais "hype/gamer" que o mint premium/pastel que o site tem hoje. Não troquei a paleta ainda (aguardando decisão), só documentando o achado.
+
+## Tipografia global
+
+Trocado `Space Mono` (corpo) + `Anton SC` (watermark do Hero, removido) por **Bricolage Grotesque** (Google Fonts, eixo variável de peso 200-800 e optical size 12-96) como família única do site. Critério: nada de Inter, precisa ser "gestual" e ao mesmo tempo robusta/profissional — Bricolage foi desenhada pra ganhar curvas mais expressivas em tamanhos grandes (títulos) sem perder legibilidade no corpo, o que evita ter que gerenciar duas famílias. Aplicada via `index.css` (`--font-sans`) e `tailwind.config.js` (`fontFamily.sans`).
+
+H2 de todas as 10 seções foi de `font-light` para `font-medium` (peso um degrau acima, mantendo a leveza geral do design). H3 não foi tocado.
+
+## Hero
+
+- Kicker "► Dev Club" acima do H1: removido.
+- Watermark "Dev Club" atrás do robô (texto gigante em Anton SC): removido — o fundo agora é só o vídeo do robô.
+- Adicionado um scrim (3 gradientes lineares sobrepostos: horizontal esquerda→direita, e vinhetas topo/base) pra garantir contraste do texto contra o vídeo sem esconder o robô — resolve o problema de legibilidade que a copy tinha antes.
+- CTAs "Quero Fazer Parte" / "Soluções" viraram `AngledButton` (componente novo, canto cortado em diagonal via `clip-path`), como teste do estilo de botão que você mandou de referência (print verde de "Ver Rankings"/"Criar Conta Grátis"). Mantive as cores do design system atual (`#6ee7a0`), só testando a forma.
+
+## SocialProof (2ª dobra)
+
+Sem mexer em copy — só motion:
+- Badge de avatares: stagger de entrada (spring, escalonado) em vez de aparecer tudo junto.
+- Números "+30" e "+25" viraram `CountUp` (contagem de 0 até o valor, disparada quando entra na viewport).
+- H2 ganhou entrada com blur→foco (`filter: blur()` animado), reforçando a leitura "cinematográfica" pedida pro Hero e estendida pra cá.
+- Marquee de empresas: pausa no hover (`group-hover:[animation-play-state:paused]`) e cada nome de empresa ganhou hover individual (escala + cor verde), antes era 100% estático/decorativo.
+
+## Nav
+
+Removidos os links "About"/"Metrics" (ficavam presos atrás de interação extra sem necessidade). Nav ficou só Logo + Download, igual em desktop e mobile — o hambúrguer mobile também saiu junto (não sobrava nada pra ele revelar). `SquashHamburger.tsx` foi deletado por ficar sem uso.

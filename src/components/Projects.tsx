@@ -31,7 +31,7 @@ export default function Projects() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.9 }}
-          className="text-center text-white font-light text-[clamp(26px,4.5vw,48px)] leading-[1.2] tracking-[-0.02em]"
+          className="text-center text-white font-medium text-[clamp(26px,4.5vw,48px)] leading-[1.2] tracking-[-0.02em]"
         >
           Tudo com Projetos <span className="text-[#6ee7a0]">Práticos e Reais</span>
         </motion.h2>

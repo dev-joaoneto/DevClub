@@ -10,7 +10,7 @@ export default function Platform() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.9 }}
-          className="text-center text-white font-light text-[clamp(24px,4vw,42px)] leading-[1.25] tracking-[-0.02em] max-w-4xl mx-auto"
+          className="text-center text-white font-medium text-[clamp(24px,4vw,42px)] leading-[1.25] tracking-[-0.02em] max-w-4xl mx-auto"
         >
           Você terá acesso a uma plataforma moderna de aulas, nossa comunidade, área de vagas, IAs
           para acelerar seu progresso e tudo com suporte dos professores

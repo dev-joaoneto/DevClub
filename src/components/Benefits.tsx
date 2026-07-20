@@ -36,7 +36,7 @@ export default function Benefits() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.9 }}
-          className="mt-24 text-center text-white font-light text-[clamp(26px,4.5vw,48px)] leading-[1.2] tracking-[-0.02em] max-w-3xl mx-auto"
+          className="mt-24 text-center text-white font-medium text-[clamp(26px,4.5vw,48px)] leading-[1.2] tracking-[-0.02em] max-w-3xl mx-auto"
         >
           Tudo que você precisa para aprender UI e UX do fundamento à prática
         </motion.h2>

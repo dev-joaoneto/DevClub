@@ -17,7 +17,7 @@ export default function Certifications() {
           <span className="inline-flex items-center gap-2 text-[12px] tracking-[0.2em] uppercase text-[#6ee7a0]">
             <BadgeCheck size={15} /> Reconhecimento real para quem conclui e evolui
           </span>
-          <h2 className="mt-5 text-white font-light text-[clamp(26px,4.5vw,48px)] leading-[1.2] tracking-[-0.02em] max-w-3xl mx-auto">
+          <h2 className="mt-5 text-white font-medium text-[clamp(26px,4.5vw,48px)] leading-[1.2] tracking-[-0.02em] max-w-3xl mx-auto">
             Escola Reconhecida pelo MEC e com Diplomas Oficiais
           </h2>
         </motion.div>

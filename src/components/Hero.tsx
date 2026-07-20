@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
+import { Zap } from 'lucide-react'
 import ScrambleIn from './ScrambleIn'
+import AngledButton from './AngledButton'
 import { scrollToId } from '../lib/scrollTo'
 
 const HERO_VIDEO = '/hero-robot.mp4'
@@ -135,34 +137,14 @@ export default function Hero({ entranceComplete }: HeroProps) {
         }}
       />
 
-      {/* Background watermark: Dev (left) / Club (right), hugging the robot */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: entranceComplete ? 1 : 0 }}
-        transition={{ duration: 1.6, ease: 'easeOut' }}
-        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
-      >
-        <span
-          className="whitespace-nowrap leading-none uppercase"
-          style={{
-            fontFamily: '"Anton SC", sans-serif',
-            fontSize: 'clamp(150px, 27vw, 520px)',
-            letterSpacing: '-0.015em',
-            transform: 'translateX(8.5vw)',
-            background:
-              'linear-gradient(to bottom, rgba(255,255,255,0.085) 0%, rgba(255,255,255,0.045) 55%, rgba(255,255,255,0.02) 100%)',
-            WebkitBackgroundClip: 'text',
-            backgroundClip: 'text',
-            color: 'transparent',
-            WebkitTextStroke: '1.5px rgba(110, 231, 160, 0.35)',
-            maskImage: 'radial-gradient(ellipse 17% 48% at 43% 50%, transparent 12%, black 52%)',
-            WebkitMaskImage:
-              'radial-gradient(ellipse 17% 48% at 43% 50%, transparent 12%, black 52%)',
-          }}
-        >
-          Dev Club
-        </span>
-      </motion.div>
+      {/* Cinematic scrim: grounds the copy against the robot without hiding it */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.72) 30%, rgba(0,0,0,0.28) 58%, rgba(0,0,0,0) 78%), linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 32%), linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 18%)',
+        }}
+      />
 
       {/* Content */}
       <motion.div
@@ -174,10 +156,6 @@ export default function Hero({ entranceComplete }: HeroProps) {
         <div className="flex-1" />
 
         <div className="flex flex-col gap-5 max-w-2xl">
-          <span className="text-[12px] sm:text-[13px] tracking-[0.25em] uppercase text-[#6ee7a0]">
-            ► Dev Club
-          </span>
-
           <h1 className="text-white font-light leading-[1.02] tracking-[-0.03em] text-[clamp(32px,6.5vw,72px)]">
             <ScrambleIn text="Tudo o que você" delay={200} triggered={entranceComplete} />
             <br />
@@ -202,22 +180,12 @@ export default function Hero({ entranceComplete }: HeroProps) {
             transition={{ duration: 0.9, ease: [0.215, 0.61, 0.355, 1.0], delay: 0.35 }}
             className="flex flex-wrap items-center gap-3"
           >
-            <motion.button
-              onClick={() => scrollToId('guarantee')}
-              whileHover={{ scale: 1.03, backgroundColor: '#e2e2e6' }}
-              whileTap={{ scale: 0.97 }}
-              className="h-12 px-6 bg-white text-black rounded-full text-[14px] font-medium flex items-center gap-2"
-            >
-              Quero Fazer Parte <span aria-hidden>→</span>
-            </motion.button>
-            <motion.button
-              onClick={() => scrollToId('platform')}
-              whileHover={{ scale: 1.03, backgroundColor: 'rgba(255,255,255,0.1)' }}
-              whileTap={{ scale: 0.97 }}
-              className="h-12 px-6 border border-white/25 text-white rounded-full text-[14px] flex items-center gap-2"
-            >
-              Soluções <span aria-hidden>→</span>
-            </motion.button>
+            <AngledButton onClick={() => scrollToId('guarantee')} icon={<Zap size={14} fill="currentColor" />}>
+              Quero Fazer Parte
+            </AngledButton>
+            <AngledButton onClick={() => scrollToId('platform')} variant="outline">
+              Soluções
+            </AngledButton>
           </motion.div>
 
           <motion.div

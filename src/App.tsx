@@ -23,7 +23,7 @@ export default function App() {
   }, [])
 
   return (
-    <div className="bg-black text-white" style={{ fontFamily: '"Space Mono", monospace' }}>
+    <div className="bg-black text-white">
       <Navbar entranceComplete={entranceComplete} />
       <Hero entranceComplete={entranceComplete} />
       <SocialProof />

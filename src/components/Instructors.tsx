@@ -26,7 +26,7 @@ export default function Instructors() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.9 }}
-            className="text-white font-light text-[clamp(26px,4.5vw,48px)] leading-[1.15] tracking-[-0.02em]"
+            className="text-white font-medium text-[clamp(26px,4.5vw,48px)] leading-[1.15] tracking-[-0.02em]"
           >
             Aprenda com os <span className="text-[#6ee7a0]">Melhores</span>
           </motion.h2>

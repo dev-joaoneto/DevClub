@@ -33,7 +33,7 @@ export default function AISection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.9 }}
-          className="text-center text-white font-light text-[clamp(24px,4vw,44px)] leading-[1.2] tracking-[-0.02em] max-w-4xl mx-auto"
+          className="text-center text-white font-medium text-[clamp(24px,4vw,44px)] leading-[1.2] tracking-[-0.02em] max-w-4xl mx-auto"
         >
           Aprenda as <span className="text-[#6ee7a0]">PRINCIPAIS</span> Tecnologias do Mercado — Do{' '}
           <span className="text-[#6ee7a0]">ZERO</span>, de forma Didática com os{' '}

@@ -20,7 +20,7 @@ export default function Market() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.9 }}
-          className="text-center text-white font-light text-[clamp(26px,4.5vw,48px)] tracking-[-0.02em]"
+          className="text-center text-white font-medium text-[clamp(26px,4.5vw,48px)] tracking-[-0.02em]"
         >
           O mercado <span className="text-[#6ee7a0]">paga bem?</span>
         </motion.h2>

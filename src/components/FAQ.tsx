@@ -36,7 +36,7 @@ export default function FAQ() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.9 }}
-          className="text-white font-light text-[clamp(26px,4.5vw,48px)] tracking-[-0.02em]"
+          className="text-white font-medium text-[clamp(26px,4.5vw,48px)] tracking-[-0.02em]"
         >
           Perguntas <span className="text-[#6ee7a0]">frequentes</span>
         </motion.h2>
