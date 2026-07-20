@@ -4,7 +4,7 @@ Primeira passada no repositório recém-clonado: leitura de todos os arquivos em
 
 Build e typecheck fecham limpos (0 erros) antes e depois das correções abaixo.
 
-## Corrigido
+## Corrigido — rodada 1
 
 | Onde | Problema | Correção |
 |---|---|---|
@@ -12,15 +12,24 @@ Build e typecheck fecham limpos (0 erros) antes e depois das correções abaixo.
 | [index.html](../index.html) | `<html lang="en">` com todo o conteúdo da página em pt-BR — afeta leitores de tela e SEO. | Trocado para `lang="pt-BR"`. |
 | [package.json](../package.json) | `"name": "synapsex"` — nome herdado de um projeto anterior, não bate com a identidade "Dev Club" em lugar nenhum do conteúdo visível. | Renomeado para `"dev-club"`. Não afeta build/runtime, só identidade do pacote. |
 
-## Encontrado, não alterado (decisão sua / entra no redesenho)
+## Corrigido — rodada 2
 
-Nada aqui quebra a build hoje — são pontos que vão ser tocados quando vocês definirem o redesenho das seções, então preferi não mexer sem orientação:
+| Onde | Problema | Correção |
+|---|---|---|
+| [src/components/Navbar.tsx](../src/components/Navbar.tsx), [SocialProof.tsx](../src/components/SocialProof.tsx), [Market.tsx](../src/components/Market.tsx) | "About"/"Metrics" rolavam para `1×`/`2×` a altura da janela (`scrollToSection`), não para uma seção real — só a Hero tem `h-screen` garantido, então o scroll não aterrissava no lugar certo. | Criado [src/lib/scrollTo.ts](../src/lib/scrollTo.ts) (`scrollToId`, via `scrollIntoView`). `id="about"` foi para `SocialProof` (primeiro bloco institucional/prova social pós-Hero) e `id="metrics"` para `Market` (única seção com dado numérico — gráfico de salário). Ambas as seções ganharam `scroll-mt-20` para compensar a navbar fixa (80px). Testado: os dois links aterrissam exatamente 80px abaixo do topo. |
+| [Hero.tsx](../src/components/Hero.tsx), [AISection.tsx](../src/components/AISection.tsx), [Benefits.tsx](../src/components/Benefits.tsx) | CTAs "Quero Fazer Parte", "Soluções" e "Conhecer curso" não tinham `onClick` — botões inertes. | Conectados via `scrollToId`: "Quero Fazer Parte" (Hero + AISection) → `#guarantee`; "Soluções" (Hero) → `#platform`; "Conhecer curso" (Benefits) → `#certifications`. `id` + `scroll-mt-20` adicionados em [Platform.tsx](../src/components/Platform.tsx), [Guarantee.tsx](../src/components/Guarantee.tsx) e [Certifications.tsx](../src/components/Certifications.tsx). São âncoras internas (não existe checkout/página de curso real ainda) — só resolve o "botão morto", não substitui o funil real quando ele existir. |
+| [src/index.css](../src/index.css), [Navbar.tsx](../src/components/Navbar.tsx) | CDN inteiro do Bootstrap Icons carregado só pelo ícone Apple do botão Download, com `lucide-react` já instalado. `lucide-react` só tem o ícone de fruta "Apple", não a marca — trocar por ele ficaria visualmente errado num botão de download. | Criado [src/components/AppleLogo.tsx](../src/components/AppleLogo.tsx) (SVG inline da marca). Import do Bootstrap Icons removido do `index.css`. Zero dependência externa nova. |
+| [src/index.css](../src/index.css) | Classes `.lenis*` mortas — CSS para a lib de smooth-scroll Lenis, que não está instalada em nenhum lugar do `package.json`. | Removidas. Se entrar smooth-scroll de verdade no redesenho, o CSS volta junto com a lib. |
+| `SynapseXLogo.tsx` | Nome do componente era resquício de um projeto anterior ("SynapseX"), sem relação com "Dev Club". | Renomeado para [Logo.tsx](../src/components/Logo.tsx) (`Logo`), com os 3 usos atualizados (`Navbar`, `Footer`, `Certifications`). O SVG em si (4 quadrantes) não mudou — é só identidade de nome, redesenho do ícone fica pro redesenho visual. |
 
-- **Links de navegação por altura de viewport** ([Navbar.tsx](../src/components/Navbar.tsx) `scrollToSection`): "About" e "Metrics" rolam para `1×` e `2×` a altura da janela, não para uma seção específica por `id`. Só a Hero tem `h-screen` garantido — as outras seções têm altura variável conforme conteúdo/viewport, então o scroll não aterrissa de forma confiável na seção certa. Fix correto é dar `id` às seções-alvo reais e usar `scrollIntoView`/anchor — mas isso depende de qual seção cada link deve apontar, o que ainda não está definido.
-- **CTAs sem ação real**: "Quero Fazer Parte", "Soluções", "Conhecer curso", "Falar com o suporte (WhatsApp)", ícones sociais no Footer (`href="#"`) — todos inertes, sem destino. Esperado numa landing em construção, mas fica registrado.
-- **Dependência externa via CDN só por um ícone**: `index.css` importa Bootstrap Icons inteiro (CDN) só para o ícone Apple no botão Download (`Navbar.tsx`), enquanto `lucide-react` já está instalado e cobre todo o resto dos ícones do projeto. Dá pra trocar por um ícone Lucide/SVG próprio e remover a dependência externa.
-- **Classes `.lenis*` em `index.css`** (linhas 45-55): CSS pronto para a lib de smooth-scroll Lenis, que não está instalada (`package.json` não tem `lenis` nem `@studio-freight/lenis`). Hoje é código morto — nem ajuda nem atrapalha, mas ou entra a lib ou o CSS sai.
-- **`SynapseXLogo.tsx`**: nome do componente é resquício de um projeto anterior ("SynapseX"); o logo em si (SVG de 4 quadrantes) é genérico e pode ser renomeado/refeito no redesenho.
+## Ainda pendente — precisa de dado real, não é código
+
+Não fabriquei essas informações porque errar aqui é pior do que deixar em aberto (link errado passa credibilidade pior que nenhum link):
+
+- **"Falar com o suporte (WhatsApp)"** ([FAQ.tsx](../src/components/FAQ.tsx)): falta o número real de WhatsApp da DevClub pra virar um link `wa.me/...` de verdade.
+- **Ícones sociais do Footer** (Instagram/YouTube/LinkedIn, [Footer.tsx](../src/components/Footer.tsx)): `href="#"` — falta confirmar os handles oficiais da marca (achei o Instagram pessoal do Rodolfo Mori na pesquisa, mas não é necessariamente a conta oficial da DevClub).
+
+Me manda os dois quando tiver e eu conecto.
 
 ## Estrutura — decomposição
 

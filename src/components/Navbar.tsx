@@ -1,18 +1,16 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import SynapseXLogo from './SynapseXLogo'
+import Logo from './Logo'
+import AppleLogo from './AppleLogo'
 import ScrambleText from './ScrambleText'
 import SquashHamburger from './SquashHamburger'
+import { scrollToId } from '../lib/scrollTo'
 
 interface NavbarProps {
   entranceComplete: boolean
 }
 
 const menuSpring = { type: 'spring' as const, stiffness: 350, damping: 28 }
-
-const scrollToSection = (multiplier: number) => {
-  window.scrollTo({ top: window.innerHeight * multiplier, behavior: 'smooth' })
-}
 
 function NavLink({
   label,
@@ -48,7 +46,7 @@ function DownloadButton({ mobile = false }: { mobile?: boolean }) {
         mobile ? 'h-9 px-3.5 text-[13px]' : 'h-12 px-6 text-[16px]'
       } bg-white rounded-full text-black font-normal flex items-center gap-2 whitespace-nowrap`}
     >
-      <i className="bi bi-apple" aria-hidden="true" />
+      <AppleLogo size={mobile ? 12 : 14} />
       <ScrambleText text="Download" isHovered={hovered} />
     </motion.button>
   )
@@ -72,13 +70,13 @@ export default function Navbar({ entranceComplete }: NavbarProps) {
             whileTap={{ scale: 0.98 }}
             className="flex h-12 px-5 bg-white/15 backdrop-blur-md rounded-[14px] items-center gap-2.5 cursor-pointer"
           >
-            <SynapseXLogo size={18} className="text-white" />
+            <Logo size={18} className="text-white" />
             <span className="text-[16px] font-medium tracking-tight text-white">Dev Club</span>
           </motion.div>
 
           <div className="h-12 px-5 rounded-[14px] bg-white/15 backdrop-blur-md flex items-center gap-6">
-            <NavLink label="About" onClick={() => scrollToSection(1)} />
-            <NavLink label="Metrics" onClick={() => scrollToSection(2)} />
+            <NavLink label="About" onClick={() => scrollToId('about')} />
+            <NavLink label="Metrics" onClick={() => scrollToId('metrics')} />
           </div>
         </div>
 
@@ -94,7 +92,7 @@ export default function Navbar({ entranceComplete }: NavbarProps) {
             className="h-9 bg-white/15 backdrop-blur-md rounded-[10px] flex items-center overflow-hidden shrink-0"
           >
             <div className="flex items-center gap-2 px-3.5 shrink-0">
-              <SynapseXLogo size={14} className="text-white" />
+              <Logo size={14} className="text-white" />
               <span className="text-[13px] font-medium tracking-tight text-white">Dev Club</span>
             </div>
           </motion.div>
@@ -122,10 +120,10 @@ export default function Navbar({ entranceComplete }: NavbarProps) {
                 transition={{ duration: 0.35 }}
                 className="flex items-center gap-4 pl-3"
               >
-                <NavLink label="About" onClick={() => scrollToSection(1)} className="text-[13px]" />
+                <NavLink label="About" onClick={() => scrollToId('about')} className="text-[13px]" />
                 <NavLink
                   label="Metrics"
-                  onClick={() => scrollToSection(2)}
+                  onClick={() => scrollToId('metrics')}
                   className="text-[13px]"
                 />
               </motion.div>

@@ -26,11 +26,14 @@ npm run preview  # preview do build
 src/
   App.tsx              # composição da página — só monta as seções, sem lógica
   main.tsx             # entrypoint React
-  index.css            # fonts, reset, keyframe do marquee, classes .lenis (não usadas ainda)
+  index.css            # fonts, reset, keyframe do marquee
+  lib/
+    scrollTo.ts          # scrollToId — scroll suave para uma seção por id (usado por nav + CTAs)
   components/
     Navbar.tsx          # nav fixa — desktop com links diretos, mobile com hambúrguer colapsável
     SquashHamburger.tsx # ícone animado do hambúrguer (usado só no mobile)
-    SynapseXLogo.tsx    # logo SVG (nome herdado do projeto anterior "SynapseX")
+    Logo.tsx             # logo SVG da Dev Club (4 quadrantes)
+    AppleLogo.tsx         # ícone da Apple inline (sem dependência de CDN)
     ScrambleText.tsx    # efeito de scramble em hover (usado em nav links/botões)
     ScrambleIn.tsx       # efeito de scramble no load/entrance (usado no H1 do Hero)
     Hero.tsx             # seção hero — vídeo com head-tracking pelo mouse + watermark blur patch

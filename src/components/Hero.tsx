@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 import ScrambleIn from './ScrambleIn'
+import { scrollToId } from '../lib/scrollTo'
 
 const HERO_VIDEO = '/hero-robot.mp4'
 
@@ -202,6 +203,7 @@ export default function Hero({ entranceComplete }: HeroProps) {
             className="flex flex-wrap items-center gap-3"
           >
             <motion.button
+              onClick={() => scrollToId('guarantee')}
               whileHover={{ scale: 1.03, backgroundColor: '#e2e2e6' }}
               whileTap={{ scale: 0.97 }}
               className="h-12 px-6 bg-white text-black rounded-full text-[14px] font-medium flex items-center gap-2"
@@ -209,6 +211,7 @@ export default function Hero({ entranceComplete }: HeroProps) {
               Quero Fazer Parte <span aria-hidden>→</span>
             </motion.button>
             <motion.button
+              onClick={() => scrollToId('platform')}
               whileHover={{ scale: 1.03, backgroundColor: 'rgba(255,255,255,0.1)' }}
               whileTap={{ scale: 0.97 }}
               className="h-12 px-6 border border-white/25 text-white rounded-full text-[14px] flex items-center gap-2"

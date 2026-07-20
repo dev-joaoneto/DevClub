@@ -13,7 +13,7 @@ const formatBRL = (v: number) =>
 
 export default function Market() {
   return (
-    <section className="relative bg-black py-24 sm:py-28">
+    <section id="metrics" className="relative bg-black py-24 sm:py-28 scroll-mt-20">
       <div className="max-w-4xl mx-auto px-6">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}

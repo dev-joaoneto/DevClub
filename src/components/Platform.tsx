@@ -3,7 +3,7 @@ import { Monitor, Play } from 'lucide-react'
 
 export default function Platform() {
   return (
-    <section className="relative bg-black py-24 sm:py-28">
+    <section id="platform" className="relative bg-black py-24 sm:py-28 scroll-mt-20">
       <div className="max-w-6xl mx-auto px-6">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}

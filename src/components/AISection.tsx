@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { Bot, Sparkles, Brain, Image, MessageSquare, Zap } from 'lucide-react'
+import { scrollToId } from '../lib/scrollTo'
 
 const AI_MODELS = [
   { name: 'ChatGPT', Icon: MessageSquare },
@@ -73,6 +74,7 @@ export default function AISection() {
           </p>
 
           <motion.button
+            onClick={() => scrollToId('guarantee')}
             whileHover={{ scale: 1.03, backgroundColor: '#e2e2e6' }}
             whileTap={{ scale: 0.97 }}
             className="mt-10 h-12 px-6 bg-white text-black rounded-full text-[14px] font-medium flex items-center gap-2"

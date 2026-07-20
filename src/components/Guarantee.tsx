@@ -9,7 +9,7 @@ const STEPS = [
 
 export default function Guarantee() {
   return (
-    <section className="relative bg-black py-24 sm:py-28">
+    <section id="guarantee" className="relative bg-black py-24 sm:py-28 scroll-mt-20">
       <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

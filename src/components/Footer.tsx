@@ -1,5 +1,5 @@
 import { Instagram, Linkedin, Youtube } from 'lucide-react'
-import SynapseXLogo from './SynapseXLogo'
+import Logo from './Logo'
 
 const LINK_COLUMNS = [
   { title: 'Workshops', links: ['UI na prática', 'Framer do zero', 'Design de portfólio'] },
@@ -21,7 +21,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-[1.4fr_repeat(3,1fr)] gap-12">
         <div>
           <div className="flex items-center gap-2.5">
-            <SynapseXLogo size={18} className="text-white/80" />
+            <Logo size={18} className="text-white/80" />
             <span className="text-[15px] font-medium text-white/80 tracking-tight">Dev Club</span>
           </div>
           <p className="mt-5 text-white/40 text-[13px] leading-relaxed max-w-xs">

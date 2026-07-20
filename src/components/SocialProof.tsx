@@ -10,7 +10,7 @@ const BADGE_AVATARS: [string, string, string][] = [
 
 export default function SocialProof() {
   return (
-    <section className="relative bg-black py-24 sm:py-28 overflow-hidden">
+    <section id="about" className="relative bg-black py-24 sm:py-28 overflow-hidden scroll-mt-20">
       <div className="max-w-6xl mx-auto px-6 flex flex-col items-center text-center">
         <motion.div
           initial={{ opacity: 0, y: 25 }}

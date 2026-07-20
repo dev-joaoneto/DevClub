@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion'
 import { Award, BadgeCheck } from 'lucide-react'
-import SynapseXLogo from './SynapseXLogo'
+import Logo from './Logo'
 
 const CERTIFICATES = ['Framer Skills', 'UI Skills']
 
 export default function Certifications() {
   return (
-    <section className="relative bg-black py-24 sm:py-28">
+    <section id="certifications" className="relative bg-black py-24 sm:py-28 scroll-mt-20">
       <div className="max-w-6xl mx-auto px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -44,7 +44,7 @@ export default function Certifications() {
                 <div className="relative">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <SynapseXLogo size={16} className="text-white/70" />
+                      <Logo size={16} className="text-white/70" />
                       <span className="text-white/70 text-[12px] font-medium tracking-tight">
                         Dev Club
                       </span>

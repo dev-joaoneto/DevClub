@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { Bot, Headphones, Users, Briefcase, Check } from 'lucide-react'
+import { scrollToId } from '../lib/scrollTo'
 
 const BENEFITS = [
   { Icon: Bot, text: 'Dezenas de Agentes de IA para te ajudar 24h por dia' },
@@ -67,6 +68,7 @@ export default function Benefits() {
                 publicação.
               </p>
               <motion.button
+                onClick={() => scrollToId('certifications')}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 className="mt-8 h-12 px-6 bg-[#6ee7a0] text-black rounded-full text-[14px] font-medium flex items-center gap-2"
