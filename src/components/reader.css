@@ -79,6 +79,12 @@
   height: 60%;
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
 }
+.reader-logo-img {
+  width: 74%;
+  height: 74%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+}
 .reader.is-reading .reader-logo-link,
 .reader.is-peek .reader-logo-link {
   width: 26px;
@@ -340,6 +346,46 @@
     padding: 7px 12px;
     font-size: 12px;
   }
+}
+
+/* ---------- Badge de confiança — grudado no canto direito, ao lado do Reader ---------- */
+.reader-trust {
+  position: fixed;
+  top: calc(20px + env(safe-area-inset-top, 0px));
+  right: 20px;
+  z-index: 50;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 16px 7px 8px;
+  background: var(--reader-bg);
+  -webkit-backdrop-filter: blur(40px) saturate(1.8);
+  backdrop-filter: blur(40px) saturate(1.8);
+  border: 1px solid var(--reader-stroke);
+  border-radius: 999px;
+  box-shadow: inset 0 1px 0 var(--reader-highlight), 0 14px 44px rgba(0, 0, 0, 0.5);
+}
+.reader-trust-avatars {
+  display: flex;
+  padding-left: 8px;
+}
+.reader-trust-avatars span {
+  width: 26px;
+  height: 26px;
+  margin-left: -8px;
+  border-radius: 50%;
+  border: 2px solid #0d0f14;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+}
+.reader-trust-text {
+  color: var(--reader-fg-dim);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 @media (prefers-reduced-motion: reduce) {

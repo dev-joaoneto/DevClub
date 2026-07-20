@@ -169,3 +169,21 @@ Porte completo do header flutuante do DGX Visual Foundry (specimen `dgx-sovereig
 Cliques por coordenada de pixel erravam o alvo logo após o clique no ▾ — a pílula tem `transition: padding/gap .4s`, e medir a posição do botão e clicar são dois momentos diferentes; no meio do caminho o layout ainda está animando. Não é bug do componente, é uma pegadinha de teste (mudei pra clicar via `elemento.click()` direto, que não depende de coordenada). Separadamente, o servidor de dev desta sessão tem HMR historicamente instável (já visto em rodadas anteriores) — um hard reload resolveu um falso-negativo onde o clique no botão não abria o painel.
 
 Testado desktop e mobile: estado compacto/expandido, seção ativa acendendo no scroll, dropdown abrindo/travando/destravando com mensagem, peek, fechar por clique-fora, tilt 3D, scroll suave até cada seção, build/typecheck limpos.
+
+# Redesenho — rodada 7 (logo oficial, badge no header, limpeza da SocialProof)
+
+## Logo oficial no header
+
+Trocado o `Logo.tsx` (SVG geométrico genérico) pela logo real da Dev Club (`public/devclub-logo.png`, copiada de `~/Workspace/MARKETING/DevClub.png` — PNG 62×62 com alpha, o ícone verde pixelado que já tinha visto na loja oficial). Só o header mudou — `Logo.tsx` continua em uso no Footer e nos cards de certificado, não foi tocado. O tilt 3D da pílula funciona igual com `<img>` no lugar do `<svg>` (a transform aplica no wrapper `<a>`, não no conteúdo).
+
+## Badge de confiança migrou pro header
+
+"+30 mil alunos já passaram por aqui" (avatares + `CountUp`) saiu da `SocialProof` e virou um elemento próprio, fixo no canto superior direito, colado ("grudado") ao lado da pílula central — mesmo tratamento glass (`--reader-bg`, blur, stroke) pra ficar na família visual do Reader sem fazer parte da sua máquina de estado (não participa do dropdown/scroll/tilt). Escondido em mobile (`hidden sm:inline-flex`) — não cabia ao lado da pílula principal em telas pequenas sem colidir.
+
+## SocialProof zerada
+
+Removidos: H2 ("+25 mil alunos já passaram por aqui"), parágrafo ("Alunos nas maiores empresas..."), e a marquee de empresas (Facebook/Ambev/iFood/OAB/UFRJ/Brasil Paralelo/USP) — redundante agora que o carrossel de patrocinadores real vive no Hero. A seção `#about` fica só com o glow ambiente de transição (rodada 5), ~224px de vão vazio até a `AISection` começar. É um estado intermediário esperado — a seção ainda não tem o conteúdo novo definido.
+
+CSS órfão limpo: `.marquee-track`/`@keyframes marquee` (30s) não tinha mais nenhum uso depois da marquee antiga sair — removido de `index.css` (ficou só `.hero-marquee-track`, que reaproveita o mesmo `@keyframes marquee`).
+
+Testado desktop e mobile: logo nítida em 26-34px, badge só aparece ≥640px, tilt funcionando, build/typecheck limpos.

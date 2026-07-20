@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import Logo from './Logo'
+import CountUp from './CountUp'
 import { scrollToId } from '../lib/scrollTo'
 import './reader.css'
+
+const TRUST_AVATARS: [string, string, string][] = [
+  ['RB', '#1f4736', '#6ee7a0'],
+  ['TS', '#243447', '#7fb4e8'],
+  ['GA', '#43302a', '#e8a97f'],
+]
 
 interface NavbarProps {
   entranceComplete: boolean
@@ -233,13 +239,30 @@ export default function Navbar({ entranceComplete }: NavbarProps) {
   const stateClass = isReading ? 'is-reading' : isPeek ? 'is-peek' : ''
 
   return (
-    <header
-      ref={readerRef}
-      className={`reader ${stateClass}`}
-      style={{ opacity: entranceComplete ? 1 : 0, transition: 'opacity 0.8s ease' }}
-      onPointerEnter={handleReaderPointerEnter}
-      onPointerLeave={handleReaderPointerLeave}
-    >
+    <>
+      <div
+        className="reader-trust hidden sm:inline-flex"
+        style={{ opacity: entranceComplete ? 1 : 0, transition: 'opacity 0.8s ease 0.2s' }}
+      >
+        <div className="reader-trust-avatars">
+          {TRUST_AVATARS.map(([initials, from, to]) => (
+            <span key={initials} style={{ background: `linear-gradient(135deg, ${from}, ${to})` }}>
+              {initials}
+            </span>
+          ))}
+        </div>
+        <span className="reader-trust-text">
+          +<CountUp to={30} /> mil alunos já passaram por aqui
+        </span>
+      </div>
+
+      <header
+        ref={readerRef}
+        className={`reader ${stateClass}`}
+        style={{ opacity: entranceComplete ? 1 : 0, transition: 'opacity 0.8s ease' }}
+        onPointerEnter={handleReaderPointerEnter}
+        onPointerLeave={handleReaderPointerLeave}
+      >
       <div ref={pillRef} className="reader-pill" onClick={handlePillClick}>
         <span className="reader-glint" aria-hidden="true" />
 
@@ -253,7 +276,7 @@ export default function Navbar({ entranceComplete }: NavbarProps) {
             handleLinkClick('hero')
           }}
         >
-          <Logo size={18} />
+          <img src="/devclub-logo.png" alt="Dev Club" className="reader-logo-img" />
         </a>
 
         <button
@@ -330,6 +353,7 @@ export default function Navbar({ entranceComplete }: NavbarProps) {
           <span style={{ width: `${progress}%` }} />
         </span>
       </div>
-    </header>
+      </header>
+    </>
   )
 }
