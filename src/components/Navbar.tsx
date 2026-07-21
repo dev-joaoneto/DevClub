@@ -194,7 +194,7 @@ export default function Navbar({ entranceComplete }: NavbarProps) {
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [closeNav, closePeek])
 
-  // ---------- Tilt 3D + glint na logo (só pointer:fine, respeita reduced-motion) ----------
+  // ---------- Tilt 3D na logo (só pointer:fine, respeita reduced-motion) ----------
   useEffect(() => {
     const pill = pillRef.current
     const logoLink = logoLinkRef.current
@@ -209,8 +209,6 @@ export default function Navbar({ entranceComplete }: NavbarProps) {
       const ny = (e.clientY - r.top) / r.height - 0.5
       logoLink.style.setProperty('--ry', `${(nx * 18).toFixed(2)}deg`)
       logoLink.style.setProperty('--rx', `${(-ny * 18).toFixed(2)}deg`)
-      pill.style.setProperty('--mx', `${((nx + 0.5) * 100).toFixed(1)}%`)
-      pill.style.setProperty('--my', `${((ny + 0.5) * 100).toFixed(1)}%`)
     }
     const onPointerLeave = () => {
       logoLink.style.setProperty('--rx', '0deg')
@@ -240,20 +238,23 @@ export default function Navbar({ entranceComplete }: NavbarProps) {
       onPointerLeave={handleReaderPointerLeave}
     >
       <div ref={pillRef} className="reader-pill" onClick={handlePillClick}>
-        <span className="reader-glint" aria-hidden="true" />
-
-        <a
-          ref={logoLinkRef}
-          className="reader-logo-link"
-          href="#hero"
-          aria-label="Dev Club — voltar ao início"
-          onClick={(e) => {
-            e.preventDefault()
-            handleLinkClick('hero')
-          }}
-        >
-          <img src="/devclub-logo.png" alt="Dev Club" className="reader-logo-img" />
-        </a>
+        <div className="reader-logo-group">
+          <a
+            ref={logoLinkRef}
+            className="reader-logo-link"
+            href="#hero"
+            aria-label="Dev Club — voltar ao início"
+            onClick={(e) => {
+              e.preventDefault()
+              handleLinkClick('hero')
+            }}
+          >
+            <img src="/devclub-logo.png" alt="Dev Club" className="reader-logo-img" />
+          </a>
+          <span className="reader-logo-text" aria-hidden="true">
+            Dev Club
+          </span>
+        </div>
 
         <button
           ref={megaBtnRef}

@@ -1,16 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
-import { Zap } from 'lucide-react'
+import { Sparkles, Zap } from 'lucide-react'
 import ScrambleIn from './ScrambleIn'
 import AngledButton from './AngledButton'
 import HeroSponsors from './HeroSponsors'
 import CountUp from './CountUp'
 import { scrollToId } from '../lib/scrollTo'
 
-const TRUST_AVATARS: [string, string, string][] = [
-  ['RB', '#1f4736', '#6ee7a0'],
-  ['TS', '#243447', '#7fb4e8'],
-  ['GA', '#43302a', '#e8a97f'],
+// Photo falls back to the initials/gradient underneath if the placeholder
+// service is ever unreachable (onError hides the <img>, not the span).
+const TRUST_AVATARS: { img: string; initials: string; from: string; to: string }[] = [
+  { img: 'https://i.pravatar.cc/64?img=13', initials: 'RB', from: '#1f4736', to: '#6ee7a0' },
+  { img: 'https://i.pravatar.cc/64?img=32', initials: 'TS', from: '#243447', to: '#7fb4e8' },
+  { img: 'https://i.pravatar.cc/64?img=47', initials: 'GA', from: '#43302a', to: '#e8a97f' },
 ]
 
 const HERO_VIDEO = '/hero-robot.mp4'
@@ -31,6 +33,10 @@ const MARK_X = 1159.5
 const MARK_Y = 599.5
 const MARK_SIZE = 48
 
+// Nudges the whole video (and everything pinned to it) down so the robot's
+// head clears the floating header instead of sitting right behind it
+const VIDEO_SHIFT_Y = 64
+
 interface HeroProps {
   entranceComplete: boolean
 }
@@ -39,8 +45,9 @@ export default function Hero({ entranceComplete }: HeroProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const sectionRef = useRef<HTMLElement>(null)
   const buttonsRef = useRef<HTMLDivElement>(null)
+  const primaryButtonRef = useRef<HTMLDivElement>(null)
   const [patch, setPatch] = useState({ left: 0, top: 0, size: 0 })
-  const [trustTop, setTrustTop] = useState<number | null>(null)
+  const [trustPos, setTrustPos] = useState<{ top: number; left: number } | null>(null)
 
   // Head follows the cursor: mouse X -> head-turn segment of the timeline,
   // smoothed through a framer-motion spring for a light, natural follow
@@ -120,17 +127,22 @@ export default function Hero({ entranceComplete }: HeroProps) {
     return () => window.removeEventListener('resize', compute)
   }, [])
 
-  // Trust badge sits centered, just below the CTA row — measured against the
-  // real rendered height of the headline block instead of a guessed top-%,
-  // so it holds up across every breakpoint and font-wrap.
+  // Trust badge sits below the "Quero Fazer Parte" button, left-aligned with
+  // it — measured against the real rendered rects instead of a guessed
+  // top/left-%, so it holds up across every breakpoint and font-wrap.
   useEffect(() => {
     const compute = () => {
       const section = sectionRef.current
       const buttons = buttonsRef.current
-      if (!section || !buttons) return
-      const sectionTop = section.getBoundingClientRect().top
+      const primaryButton = primaryButtonRef.current
+      if (!section || !buttons || !primaryButton) return
+      const sectionRect = section.getBoundingClientRect()
       const buttonsBottom = buttons.getBoundingClientRect().bottom
-      setTrustTop(buttonsBottom - sectionTop + 24)
+      const primaryLeft = primaryButton.getBoundingClientRect().left
+      setTrustPos({
+        top: buttonsBottom - sectionRect.top + 24,
+        left: primaryLeft - sectionRect.left,
+      })
     }
     compute()
     const ro = new ResizeObserver(compute)
@@ -148,6 +160,19 @@ export default function Hero({ entranceComplete }: HeroProps) {
       ref={sectionRef}
       className="relative h-screen h-[100dvh] overflow-hidden bg-black"
     >
+      {/* Ambient backdrop behind the video — matches the video's own dark
+          backdrop tone exactly at VIDEO_SHIFT_Y so the strip revealed by
+          shifting the video down blends seamlessly, plus a soft green glow
+          bleeding up from behind the robot's head for extra depth. */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `radial-gradient(ellipse 55% 60% at 50% 0%, rgba(110,231,160,0.12), transparent 65%),
+            linear-gradient(180deg, #000000 0px, #121718 ${VIDEO_SHIFT_Y + 90}px, #121718 100%)`,
+          filter: 'blur(30px)',
+        }}
+      />
+
       <video
         ref={videoRef}
         src={HERO_VIDEO}
@@ -155,6 +180,7 @@ export default function Hero({ entranceComplete }: HeroProps) {
         playsInline
         preload="auto"
         className="absolute inset-0 w-full h-full object-cover"
+        style={{ transform: `translateY(${VIDEO_SHIFT_Y}px)` }}
       />
 
       {/* Black blur patch hiding the Gemini watermark */}
@@ -165,7 +191,7 @@ export default function Hero({ entranceComplete }: HeroProps) {
           top: patch.top,
           width: patch.size,
           height: patch.size,
-          transform: 'translate(-50%, -50%)',
+          transform: `translate(-50%, calc(-50% + ${VIDEO_SHIFT_Y}px))`,
           background: 'radial-gradient(circle, rgba(0,0,0,0.98) 50%, rgba(0,0,0,0) 75%)',
           filter: 'blur(4px)',
           backdropFilter: 'blur(10px)',
@@ -173,12 +199,13 @@ export default function Hero({ entranceComplete }: HeroProps) {
         }}
       />
 
-      {/* Cinematic scrim: grounds the copy against the robot without hiding it */}
+      {/* Cinematic scrim: grounds the copy against the robot without hiding it —
+          mirrored left/right so both sides fade in from the same depth. */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.72) 30%, rgba(0,0,0,0.28) 58%, rgba(0,0,0,0) 78%), linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0) 36%), linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 18%)',
+            'linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.72) 30%, rgba(0,0,0,0.28) 58%, rgba(0,0,0,0) 78%), linear-gradient(270deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.72) 30%, rgba(0,0,0,0.28) 58%, rgba(0,0,0,0) 78%), linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0) 36%), linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0) 9%)',
         }}
       />
 
@@ -215,9 +242,11 @@ export default function Hero({ entranceComplete }: HeroProps) {
           transition={{ duration: 0.9, ease: [0.215, 0.61, 0.355, 1.0], delay: 0.35 }}
           className="flex flex-wrap items-center gap-3"
         >
-          <AngledButton onClick={() => scrollToId('guarantee')} icon={<Zap size={14} fill="currentColor" />}>
-            Quero Fazer Parte
-          </AngledButton>
+          <div ref={primaryButtonRef} className="inline-block">
+            <AngledButton onClick={() => scrollToId('guarantee')} icon={<Zap size={14} fill="currentColor" />}>
+              Quero Fazer Parte
+            </AngledButton>
+          </div>
           <AngledButton onClick={() => scrollToId('platform')} variant="outline">
             Soluções
           </AngledButton>
@@ -225,23 +254,31 @@ export default function Hero({ entranceComplete }: HeroProps) {
       </motion.div>
 
       {/* Trust badge — pinned to this section only, scrolls away with the Hero
-          (not fixed like the Navbar/Reader). Centered in the viewport, just
-          below the CTA row — not up on the header's row. */}
+          (not fixed like the Navbar/Reader). Left-aligned under the primary
+          "Quero Fazer Parte" button, not centered on the viewport. */}
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: entranceComplete && trustTop !== null ? 1 : 0 }}
+        animate={{ opacity: entranceComplete && trustPos !== null ? 1 : 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="absolute left-1/2 -translate-x-1/2 z-10 inline-flex items-center gap-2.5 border border-white/10 bg-white/[0.04] backdrop-blur-md rounded-full pl-2 pr-4 py-1.5 whitespace-nowrap"
-        style={{ top: trustTop ?? 0 }}
+        className="absolute z-10 inline-flex items-center gap-2.5 border border-white/10 bg-white/[0.04] backdrop-blur-md rounded-full pl-2 pr-4 py-1.5 whitespace-nowrap"
+        style={{ top: trustPos?.top ?? 0, left: trustPos?.left ?? 0 }}
       >
         <div className="flex pl-1.5">
-          {TRUST_AVATARS.map(([initials, from, to]) => (
+          {TRUST_AVATARS.map(({ img, initials, from, to }) => (
             <span
               key={initials}
-              className="w-[26px] h-[26px] -ml-2 rounded-full border-2 border-black flex items-center justify-center text-[9px] font-bold text-white/90"
+              className="relative w-[26px] h-[26px] -ml-2 rounded-full border-2 border-black flex items-center justify-center text-[9px] font-bold text-white/90 overflow-hidden"
               style={{ background: `linear-gradient(135deg, ${from}, ${to})` }}
             >
               {initials}
+              <img
+                src={img}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover rounded-full"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none'
+                }}
+              />
             </span>
           ))}
         </div>
@@ -257,6 +294,10 @@ export default function Hero({ entranceComplete }: HeroProps) {
         transition={{ duration: 1, delay: 0.6 }}
         className="absolute inset-x-0 bottom-0 z-10"
       >
+        <p className="flex items-center justify-center gap-2 text-center text-white/50 text-[12px] sm:text-[13px] tracking-wide px-4">
+          <Sparkles size={13} className="text-[#6ee7a0] shrink-0" />
+          Alunos contratados por empresas como:
+        </p>
         <HeroSponsors />
       </motion.div>
     </section>

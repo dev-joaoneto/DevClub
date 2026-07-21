@@ -20,12 +20,12 @@ export default function AngledButton({
   className = '',
 }: AngledButtonProps) {
   const variantClass =
-    variant === 'solid' ? 'bg-[#6ee7a0] text-black' : 'border border-white/30 text-white bg-transparent'
+    variant === 'solid' ? 'cta-sheen' : 'border border-white/30 text-white bg-transparent'
 
   return (
     <motion.button
       onClick={onClick}
-      whileHover={variant === 'solid' ? { scale: 1.03, backgroundColor: '#8ef0b6' } : { scale: 1.03, backgroundColor: 'rgba(255,255,255,0.08)' }}
+      whileHover={variant === 'solid' ? { scale: 1.03 } : { scale: 1.03, backgroundColor: 'rgba(255,255,255,0.08)' }}
       whileTap={{ scale: 0.97 }}
       style={{ clipPath: CLIP }}
       className={`h-12 pl-5 pr-6 text-[14px] font-medium flex items-center gap-2 whitespace-nowrap ${variantClass} ${className}`}

@@ -19,10 +19,40 @@ body {
   background: #000;
   color: #fff;
   font-family: var(--font-sans);
-  overflow-x: hidden;
-  overflow-y: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* overflow-x lives on html ALONE (never both html+body, never a wrapping div)
+   — either combo makes Chrome lose track of the root scroller and silently
+   breaks every position:sticky element on the page. */
+html {
+  overflow-x: hidden;
+}
+
+/* Sitewide scrollbar — same green pearl gradient as the reader's progress
+   hairline, so the page's own scroll indicator reads as part of one system. */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #6ee7a0 rgba(255, 255, 255, 0.04);
+}
+::-webkit-scrollbar {
+  width: 11px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+}
+::-webkit-scrollbar-thumb {
+  background-color: #6ee7a0;
+  background-image: linear-gradient(180deg, #1f4736 0%, #6ee7a0 50%, #1f4736 100%);
+  background-clip: padding-box;
+  border: 2px solid #000;
+  border-radius: 999px;
+  box-shadow: 0 0 8px rgba(110, 231, 160, 0.45);
+}
+::-webkit-scrollbar-thumb:hover {
+  background-image: linear-gradient(180deg, #2a5c47 0%, #8ef0b6 50%, #2a5c47 100%);
+  box-shadow: 0 0 12px rgba(110, 231, 160, 0.6);
 }
 
 @keyframes marquee {
@@ -36,4 +66,39 @@ body {
 
 .hero-marquee-track {
   animation: marquee 46s linear infinite;
+}
+
+/* Reusable CTA treatment — same gradient + sheen sweep as the reader's
+   "Quero Fazer Parte" pill button, applied to every primary button sitewide. */
+.cta-sheen {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1f4736 0%, #6ee7a0 55%, #1f4736 100%);
+  color: #06170e;
+  box-shadow: inset 0 1px 0 rgba(210, 255, 230, 0.4), inset 0 -1px 0 rgba(0, 12, 6, 0.42),
+    0 8px 22px rgba(110, 231, 160, 0.35);
+  transition: filter 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.cta-sheen:hover {
+  filter: brightness(1.12);
+}
+.cta-sheen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(70deg, transparent 34%, rgba(255, 255, 255, 0.4) 50%, transparent 66%);
+  transform: translateX(-100%);
+  transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cta-sheen:hover::after {
+  transform: translateX(100%);
+}
+
+/* Sponsor name on hover mirrors the reader CTA's exact gradient (text-clipped) */
+.sponsor-item:hover .sponsor-name {
+  background-image: linear-gradient(135deg, #1f4736 0%, #6ee7a0 55%, #1f4736 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }

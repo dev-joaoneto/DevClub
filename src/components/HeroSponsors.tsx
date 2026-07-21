@@ -76,11 +76,11 @@ export default function HeroSponsors() {
         {[...SPONSORS, ...SPONSORS].map((name, i) => (
           <span
             key={`${name}-${i}`}
-            className="flex items-center gap-[15px] sm:gap-[20px] text-white/40 hover:text-[#6ee7a0] transition-colors duration-300 cursor-default"
+            className="sponsor-item flex items-center gap-[15px] sm:gap-[20px] text-white/40 hover:text-[#6ee7a0] transition-colors duration-300 cursor-default"
           >
             <SponsorIcon name={name} />
             {!WORDMARK[name] && (
-              <span className="text-[33px] sm:text-[43px] md:text-[50px] font-semibold tracking-tight whitespace-nowrap">
+              <span className="sponsor-name text-[33px] sm:text-[43px] md:text-[50px] font-semibold tracking-tight whitespace-nowrap">
                 {name}
               </span>
             )}

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
-import SocialProof from './components/SocialProof'
 import AISection from './components/AISection'
 import Benefits from './components/Benefits'
+import BeyondCode from './components/BeyondCode'
 import Platform from './components/Platform'
 import Projects from './components/Projects'
 import Testimonials from './components/Testimonials'
@@ -26,9 +26,9 @@ export default function App() {
     <div className="bg-black text-white">
       <Navbar entranceComplete={entranceComplete} />
       <Hero entranceComplete={entranceComplete} />
-      <SocialProof />
       <AISection />
       <Benefits />
+      <BeyondCode />
       <Platform />
       <Projects />
       <Testimonials />
