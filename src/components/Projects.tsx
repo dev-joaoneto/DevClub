@@ -1,30 +1,79 @@
-import { motion } from 'framer-motion'
-import { Play, Layers, MonitorSmartphone } from 'lucide-react'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 
-const PROJECTS = [
-  {
-    title: 'Clone do Disney+',
-    desc: 'Streaming completo com catálogo, player e perfis',
-    gradient: 'linear-gradient(160deg, #0e2438 0%, #06101c 70%)',
-    Icon: Play,
-  },
-  {
-    title: 'Telas de UI Avançadas',
-    desc: 'Dashboards, design systems e microinterações',
-    gradient: 'linear-gradient(160deg, #1a3527 0%, #06120c 70%)',
-    Icon: Layers,
-  },
-  {
-    title: 'Plataforma de Streaming',
-    desc: 'Do layout no Figma ao deploy em produção',
-    gradient: 'linear-gradient(160deg, #33202e 0%, #120810 70%)',
-    Icon: MonitorSmartphone,
-  },
+interface Project {
+  title: string
+  image: string
+  ratio: number
+}
+
+// Left, center (featured), right — mirrors the reference: three upright
+// screenshots, no rotation, no overlap. Center sits bigger and higher; the
+// sides are smaller and pushed down, giving the row its rhythm. Each card's
+// aspect-ratio matches its screenshot's real dimensions exactly, so the full
+// page shows with zero cropping instead of a hero-only sliver.
+const LEFT: Project = { title: 'Clone Oficial da F1', image: '/projects/formula1.png', ratio: 1920 / 6134 }
+const CENTER: Project = {
+  title: 'Site Institucional Lamborghini',
+  image: '/projects/lamborghini.png',
+  ratio: 1920 / 6467,
+}
+const RIGHT: Project = { title: 'Clone SpaceX', image: '/projects/spacex.png', ratio: 1920 / 6631 }
+
+// The rest of the library, shown in a lower grid below the featured trio.
+const MORE: Project[] = [
+  { title: 'Clone da HBO Max', image: '/projects/hbomax.png', ratio: 1920 / 4986 },
+  { title: 'SaaS Lecion — IA para Professores', image: '/projects/lecion.png', ratio: 1920 / 7981 },
+  { title: 'Clone Red Bull', image: '/projects/redbull.png', ratio: 1920 / 8349 },
 ]
 
-export default function Projects() {
+function ShowcaseCard({
+  title,
+  image,
+  ratio,
+  width,
+  offset,
+  parallax,
+}: {
+  title: string
+  image: string
+  ratio: number
+  width: string
+  offset: string
+  parallax?: import('framer-motion').MotionValue<number>
+}) {
   return (
-    <section className="relative bg-black py-24 sm:py-28">
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.8 }}
+      whileHover={{ y: -8 }}
+      style={parallax ? { aspectRatio: ratio, y: parallax } : { aspectRatio: ratio }}
+      className={`group relative w-full rounded-2xl overflow-hidden border border-white/10 shadow-[0_30px_70px_rgba(0,0,0,0.55)] ${width} ${offset}`}
+    >
+      <img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover object-top" />
+      <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/85 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <p className="text-white text-[13px] font-normal">{title}</p>
+      </div>
+    </motion.div>
+  )
+}
+
+export default function Projects() {
+  const rowRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: rowRef,
+    offset: ['start end', 'end start'],
+  })
+
+  // Subtle, delicate depth: the sides drift a touch more than the center,
+  // so the row breathes gently as you scroll instead of sitting static.
+  const sideY = useTransform(scrollYProgress, [0, 1], [26, -26])
+  const centerY = useTransform(scrollYProgress, [0, 1], [10, -10])
+
+  return (
+    <section className="relative bg-black py-24 sm:py-28 overflow-hidden">
       <div className="max-w-6xl mx-auto px-6">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
@@ -36,44 +85,63 @@ export default function Projects() {
           Tudo com Projetos <span className="text-[#6ee7a0]">Práticos e Reais</span>
         </motion.h2>
 
-        <div className="mt-14 grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {PROJECTS.map(({ title, desc, gradient, Icon }, i) => (
-            <motion.div
-              key={title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.8, delay: i * 0.12 }}
-              whileHover={{ y: -6 }}
-              className="border border-white/10 rounded-2xl overflow-hidden"
-            >
-              <div
-                className="aspect-[4/5] flex flex-col items-center justify-center gap-4 relative"
-                style={{ background: gradient }}
-              >
-                <div
-                  className="absolute inset-0 opacity-40"
-                  style={{
-                    backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)',
-                    backgroundSize: '22px 22px',
-                    opacity: 0.05,
-                  }}
-                />
-                <span className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
-                  <Icon size={24} className="text-[#6ee7a0]" />
-                </span>
-                <div className="w-2/3 space-y-2">
-                  <div className="h-2 rounded bg-white/10" />
-                  <div className="h-2 rounded bg-white/10 w-3/4 mx-auto" />
-                </div>
-              </div>
-              <div className="p-5 bg-white/[0.03]">
-                <h3 className="text-white text-[15px] font-normal">{title}</h3>
-                <p className="mt-1.5 text-white/45 text-[12.5px] leading-relaxed">{desc}</p>
-              </div>
-            </motion.div>
+        {/* Featured trio fills 85% of the section width, not a fixed pixel
+            row — so the whole composition scales with the container instead
+            of floating at an arbitrary size inside it. */}
+        <div
+          ref={rowRef}
+          className="mt-16 sm:mt-20 w-full sm:w-[85%] mx-auto flex flex-col sm:flex-row items-center sm:items-start gap-10 sm:gap-6 md:gap-8"
+        >
+          <ShowcaseCard
+            title={LEFT.title}
+            image={LEFT.image}
+            ratio={LEFT.ratio}
+            width="flex-1 min-w-0"
+            offset="sm:mt-20 md:mt-24"
+            parallax={sideY}
+          />
+          <ShowcaseCard
+            title={CENTER.title}
+            image={CENTER.image}
+            ratio={CENTER.ratio}
+            width="flex-[1.25] min-w-0"
+            offset=""
+            parallax={centerY}
+          />
+          <ShowcaseCard
+            title={RIGHT.title}
+            image={RIGHT.image}
+            ratio={RIGHT.ratio}
+            width="flex-1 min-w-0"
+            offset="sm:mt-20 md:mt-24"
+            parallax={sideY}
+          />
+        </div>
+
+        {/* Rest of the library — same card language, plain grid, no parallax. */}
+        <div className="mt-10 sm:mt-14 grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+          {MORE.map((project) => (
+            <ShowcaseCard
+              key={project.title}
+              title={project.title}
+              image={project.image}
+              ratio={project.ratio}
+              width="w-full"
+              offset=""
+            />
           ))}
         </div>
+
+        {/* Closing frame — an empty card in the same border/radius language
+            as the ones above, so the grid reads as trailing off into more
+            rather than hitting a hard stop. */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.8 }}
+          className="mt-6 sm:mt-8 h-[180px] sm:h-[220px] rounded-2xl border border-white/10 bg-white/[0.015]"
+        />
       </div>
     </section>
   )
