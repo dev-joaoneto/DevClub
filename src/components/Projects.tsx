@@ -85,12 +85,12 @@ export default function Projects() {
           Tudo com Projetos <span className="text-[#6ee7a0]">Práticos e Reais</span>
         </motion.h2>
 
-        {/* Featured trio fills 85% of the section width, not a fixed pixel
-            row — so the whole composition scales with the container instead
-            of floating at an arbitrary size inside it. */}
+        {/* Featured trio now shares the exact same track width as the MORE
+            grid below — same container, same gap, equal flex-1 columns —
+            so both rows of three line up card-for-card. */}
         <div
           ref={rowRef}
-          className="mt-16 sm:mt-20 w-full sm:w-[85%] mx-auto flex flex-col sm:flex-row items-center sm:items-start gap-10 sm:gap-6 md:gap-8"
+          className="mt-16 sm:mt-20 w-full flex flex-col sm:flex-row items-center sm:items-start gap-10 sm:gap-6 md:gap-8"
         >
           <ShowcaseCard
             title={LEFT.title}
@@ -104,7 +104,7 @@ export default function Projects() {
             title={CENTER.title}
             image={CENTER.image}
             ratio={CENTER.ratio}
-            width="flex-[1.25] min-w-0"
+            width="flex-1 min-w-0"
             offset=""
             parallax={centerY}
           />

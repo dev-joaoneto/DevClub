@@ -212,7 +212,7 @@ export default function AISection() {
         >
           <motion.div
             ref={viewportRef}
-            className="relative h-[300px] sm:h-[320px] cursor-grab active:cursor-grabbing"
+            className="relative h-[300px] sm:h-[320px] overflow-hidden cursor-grab active:cursor-grabbing"
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.6}
