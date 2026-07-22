@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   Bot,
@@ -117,20 +117,34 @@ function MockupFrame({
 
 export default function Platform() {
   const [index, setIndex] = useState(0)
-  const [paused, setPaused] = useState(false)
+  const [hovered, setHovered] = useState(false)
+  const [inView, setInView] = useState(false)
+  const sectionRef = useRef<HTMLElement>(null)
+
+  // Autoplay only runs while the section is actually on screen — no point
+  // spending cycles animating a carousel the user has already scrolled past.
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el || !('IntersectionObserver' in window)) return
+    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), {
+      threshold: 0.4,
+    })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
 
   useEffect(() => {
-    if (paused) return
+    if (hovered || !inView) return
     const id = setInterval(() => {
       setIndex((prev) => (prev + 1) % SLIDES.length)
     }, AUTOPLAY_MS)
     return () => clearInterval(id)
-  }, [paused, index])
+  }, [hovered, inView, index])
 
   const goTo = (next: number) => setIndex((next + SLIDES.length) % SLIDES.length)
 
   return (
-    <section id="platform" className="relative bg-black py-24 sm:py-28 scroll-mt-20">
+    <section id="platform" ref={sectionRef} className="relative bg-black py-24 sm:py-28 scroll-mt-20">
       <div className="max-w-6xl mx-auto px-6">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
@@ -144,9 +158,9 @@ export default function Platform() {
         </motion.h2>
 
         <div
-          className="relative mt-16 rounded-3xl border border-white/10 bg-white/[0.03] p-8 sm:p-12 overflow-hidden"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
+          className="relative mt-16 min-h-[610px] md:min-h-[430px] flex items-center rounded-3xl border border-white/10 bg-white/[0.03] p-8 sm:p-12 overflow-hidden"
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
         >
           <div
             className="absolute inset-0 pointer-events-none"
@@ -162,7 +176,7 @@ export default function Platform() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -14 }}
               transition={{ duration: 0.45, ease: 'easeOut' }}
-              className="relative flex flex-col md:flex-row items-center gap-10 md:gap-14"
+              className="relative flex w-full flex-col md:flex-row items-center gap-10 md:gap-14"
             >
               <div className="flex-1">
                 <span className="w-12 h-12 rounded-xl bg-[#6ee7a0]/10 flex items-center justify-center">
