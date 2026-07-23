@@ -244,7 +244,7 @@ export default function Hero({ entranceComplete }: HeroProps) {
         >
           <div ref={primaryButtonRef} className="inline-block">
             <AngledButton href="https://w.app/crtgeh" target="_blank" rel="noopener noreferrer" icon={<Zap size={14} fill="currentColor" />}>
-              Matricular-se
+              Matricule-se
             </AngledButton>
           </div>
           <AngledButton onClick={() => scrollToId('platform')} variant="outline">
