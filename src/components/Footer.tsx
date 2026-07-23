@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Instagram, Linkedin, Youtube } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion'
 
 // Every link here points at a real section of this page — no placeholder
 // hrefs. Add new columns only once there's an equally real destination.
@@ -187,13 +187,19 @@ function FooterContent() {
   )
 }
 
-// The oversized brand wordmark that lives behind the footer — pinned
-// (position: sticky) so it never moves on its own. The footer's content
-// sits on top of it and is what actually travels: as you scroll down it
-// slides up and off, uncovering the wordmark bit by bit; scroll back up
-// and it slides back down over it. Pure CSS — no scroll listener drives
-// either side, so the two can never fall out of sync with each other.
-function WordmarkStage() {
+// The oversized brand wordmark that lives behind the footer. The stage is
+// pinned (position: sticky) so it holds still in view; the wordmark itself
+// is driven by scroll — it rises up from behind the opaque footer card as
+// you reach the end of the page, renders in full, then the page runs out
+// (the reveal locks). Scroll back up and it sinks back down behind the
+// card until it's gone. The `y` motion value comes from the footer's own
+// scroll progress, so finger/wheel drive it directly — no animation clock,
+// nothing to fall out of sync, fully reversible.
+//
+// The whole block (wordmark + founder tag) moves as one so the annotation
+// always tracks the letters. On mobile the size floor is deliberately
+// large so "Dev Club" is legible the moment it clears the card.
+function WordmarkStage({ y }: { y: MotionValue<string> }) {
   return (
     <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-black">
       <div
@@ -205,7 +211,10 @@ function WordmarkStage() {
         style={{ background: 'linear-gradient(90deg, transparent, rgba(110,231,160,0.4), transparent)' }}
       />
 
-      <div className="relative mx-auto w-[90%] max-w-[1320px] px-6">
+      <motion.div
+        style={{ y }}
+        className="relative mx-auto w-[90%] max-w-[1320px] px-6 will-change-transform"
+      >
         <FounderMark />
         <h2
           aria-hidden="true"
@@ -213,63 +222,83 @@ function WordmarkStage() {
             color: 'rgba(110,231,160,0.07)',
             WebkitTextStroke: '1.5px rgba(110,231,160,0.4)',
           }}
-          className="select-none w-full text-center font-bold leading-[0.85] tracking-[-0.03em] text-[clamp(56px,15vw,320px)]"
+          className="select-none w-full text-center font-bold leading-[0.85] tracking-[-0.03em] text-[clamp(92px,19vw,340px)]"
         >
           Dev Club
         </h2>
         <span className="sr-only">Dev Club</span>
-      </div>
+      </motion.div>
     </div>
   )
 }
 
+// Extra scroll room (in dvh) below the footer content — this is the runway
+// the reveal plays out over. Kept above one viewport so the sticky stage
+// actually pins on desktop too (a shorter footer than the viewport can't
+// pin, which is what made the old version "just appear" instead of reveal).
+// The page ends right as the wordmark finishes rising: reveal locks, no
+// dead scroll after. Tune this to make the reveal longer/shorter.
+const REVEAL_DVH = 72
+
+// How far (as a share of the wordmark block's own height) it starts pushed
+// down behind the card, and where it settles. [enter, done] map to scroll
+// progress: it stays hidden until 25% through the footer, then rises to rest
+// exactly at the end. Tune the START to change how much it "climbs".
+const RISE_FROM = '85%'
+const RISE_TO = '0%'
+const RISE_START = 0.25
+
 export default function Footer() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const stageRef = useRef<HTMLDivElement>(null)
+  const footerRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
-  const [stageHeight, setStageHeight] = useState(0)
   const [contentHeight, setContentHeight] = useState(0)
 
-  // Real, measured heights (border-box, via offsetHeight — not
-  // ResizeObserver's contentRect, which excludes padding and under-measured
-  // things before) so the extra scroll room always matches exactly what's
-  // on screen, at any breakpoint or content change.
+  // Measure the real content height (border-box, via offsetHeight — not
+  // ResizeObserver's contentRect, which drops padding) so the footer is
+  // exactly `content + REVEAL_DVH` tall at any breakpoint. contentHeight is
+  // the only thing that changes per viewport; the reveal room is a constant.
   useEffect(() => {
-    const stageEl = stageRef.current
     const contentEl = contentRef.current
-    if (!stageEl || !contentEl) return
-
-    const updateStage = () => setStageHeight(stageEl.offsetHeight)
-    const updateContent = () => setContentHeight(contentEl.offsetHeight)
-    const stageObserver = new ResizeObserver(updateStage)
-    const contentObserver = new ResizeObserver(updateContent)
-    updateStage()
-    updateContent()
-    stageObserver.observe(stageEl)
-    contentObserver.observe(contentEl)
-    return () => {
-      stageObserver.disconnect()
-      contentObserver.disconnect()
-    }
+    if (!contentEl) return
+    const update = () => setContentHeight(contentEl.offsetHeight)
+    const observer = new ResizeObserver(update)
+    update()
+    observer.observe(contentEl)
+    return () => observer.disconnect()
   }, [])
 
-  const totalHeight = stageHeight && contentHeight ? stageHeight + contentHeight : undefined
+  // Progress from 0 (footer's top just entering at the viewport bottom) to
+  // 1 (footer's bottom hitting the viewport bottom = end of the page). This
+  // is the finger/wheel position itself — not a timed animation — so the
+  // reveal is scrubbable and reverses perfectly.
+  const { scrollYProgress } = useScroll({
+    target: footerRef,
+    offset: ['start end', 'end end'],
+  })
+  const wordmarkY = useTransform(scrollYProgress, [RISE_START, 1], [RISE_FROM, RISE_TO])
+
+  const totalHeight = contentHeight
+    ? `calc(${contentHeight}px + ${REVEAL_DVH}dvh)`
+    : undefined
 
   return (
     <footer
-      ref={containerRef}
+      ref={footerRef}
       className="relative bg-black"
-      style={{ height: totalHeight ? `${totalHeight}px` : undefined }}
+      // overscroll-behavior kills the rubber-band past the end so the page
+      // reads as a hard stop ("morreu a página ali") the moment the wordmark
+      // is fully revealed, on trackpad and touch alike.
+      style={{ height: totalHeight, overscrollBehaviorY: 'none' }}
     >
-      {/* Full viewport height, not a fixed px value: the reveal needs at
-          least one viewport's worth of extra scroll room below the stage
-          for it to ever finish — a shorter stage runs out of page before
-          the content finishes sliding clear. */}
-      <div ref={stageRef} className="sticky top-0 h-screen h-[100dvh]">
-        <WordmarkStage />
+      {/* Pinned full-viewport stage: holds the wordmark in view while its
+          own scroll-driven `y` lifts it up from behind the card below. */}
+      <div className="sticky top-0 h-screen h-[100dvh]">
+        <WordmarkStage y={wordmarkY} />
       </div>
 
-      <div ref={contentRef} className="absolute inset-x-0 top-0 z-10">
+      {/* The opaque footer "card" that rides on top (z-10) and hides the
+          wordmark behind it until it climbs clear. */}
+      <div ref={contentRef} className="absolute inset-x-0 top-0 z-10 bg-black">
         <FooterContent />
       </div>
     </footer>
