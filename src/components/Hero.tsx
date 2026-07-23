@@ -360,7 +360,7 @@ export default function Hero({ entranceComplete }: HeroProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: entranceComplete ? 1 : 0 }}
         transition={{ duration: 1 }}
-        className="absolute left-4 right-4 sm:left-6 sm:right-6 md:left-16 md:right-10 top-[26%] sm:top-[20%] z-10 flex flex-col gap-5 max-w-2xl"
+        className="absolute left-4 right-4 sm:left-6 sm:right-6 md:left-16 md:right-10 top-[26%] sm:top-[15%] z-10 flex flex-col gap-5 max-w-2xl"
       >
         <motion.div
           initial={{ opacity: 0, y: 15 }}
