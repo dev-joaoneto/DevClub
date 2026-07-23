@@ -430,6 +430,15 @@
     padding: 7px 10px;
     font-size: 12px;
   }
+  /* "Dev Club" ao lado da logo só existe para preencher o vazio que sobra no
+     desktop expandido — no mobile a pílula já vive no limite da largura
+     (max-width acima) e esse texto extra empurrava layout/vazava elementos. */
+  .reader.is-reading .reader-logo-text,
+  .reader.is-peek .reader-logo-text {
+    max-width: 0;
+    margin-left: 0;
+    opacity: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

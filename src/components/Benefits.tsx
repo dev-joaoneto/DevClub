@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { scrollToId } from '../lib/scrollTo'
+import AngledButton from './AngledButton'
 
 // Official brand marks (fill="currentColor", 24x24 viewBox) — ChatGPT sourced
 // from OpenAI's public mark, the rest via the simple-icons package already
@@ -34,8 +34,20 @@ const AI_TOOLS: { name: string; path: string; from: string; to: string; mono?: b
 
 export default function Benefits() {
   return (
-    <section className="relative bg-black py-24 sm:py-28">
-      <div className="max-w-6xl mx-auto px-6">
+    <section className="relative overflow-hidden py-24 sm:py-28">
+      {/* Login's green carried through the whole section this time — a vertical
+          fade so the seams with AISection/BeyondCode (both solid black) stay
+          seamless, plus a soft radial for depth. The card below gets its own
+          opaque glass fill precisely because this background is no longer
+          neutral enough to read text directly against. */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(120% 50% at 50% 50%, rgba(34,197,94,0.09), transparent 15%), linear-gradient(180deg, #000 0%, #0a2e17 25%, #0f4a24 50%, #0a2e17 70%, #000 100%)',
+        }}
+      />
+      <div className="relative max-w-6xl mx-auto px-6">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -52,7 +64,7 @@ export default function Benefits() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 1.0, delay: 0.15 }}
-          className="mt-14 relative border border-[#6ee7a0]/25 rounded-2xl overflow-hidden"
+          className="mt-14 relative border border-[#6ee7a0]/25 rounded-2xl overflow-hidden bg-black/60 backdrop-blur-xl"
         >
           <div
             className="absolute inset-0 pointer-events-none"
@@ -95,14 +107,14 @@ export default function Benefits() {
               seu dia a dia.
             </p>
 
-            <motion.button
-              onClick={() => scrollToId('guarantee')}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="cta-sheen mt-8 h-12 px-6 rounded-full text-[14px] font-medium flex items-center gap-2"
+            <AngledButton
+              className="cta-sheen mt-8 h-12 px-6 rounded-full text-[14px] font-medium flex items-center gap-2 w-fit"
+              href="https://w.app/crtgeh"
+              rel="noopener noreferrer nofollow"
+              target="_blank"
             >
-              Quero Fazer Parte <span aria-hidden>→</span>
-            </motion.button>
+              Quero Fazer Parte
+            </AngledButton>
           </div>
         </motion.div>
       </div>

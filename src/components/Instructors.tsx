@@ -113,7 +113,14 @@ export default function Instructors() {
 
   return (
     <section className="relative bg-black py-24 sm:py-28">
-      <div className="max-w-6xl mx-auto px-6">
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(120% 50% at 50% 50%, rgba(34,197,94,0.09), transparent 15%), linear-gradient(180deg, #000 0%, #0a2e17 25%, #0f4a24 50%, #0a2e17 70%, #000 100%)',
+        }}
+      />
+      <div className="relative max-w-6xl mx-auto px-6">
         <div className="flex items-end justify-between gap-6">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
@@ -155,7 +162,7 @@ export default function Instructors() {
               thin native scrollbar showed up under the cards there. */}
           <div
             ref={trackRef}
-            className="mt-12 flex gap-5 overflow-x-auto pb-2 snap-x snap-mandatory sm:snap-none px-[7.5%] sm:px-0 [&::-webkit-scrollbar]:hidden"
+            className="mt-12 flex gap-5 overflow-x-auto overflow-y-hidden pb-2 snap-x snap-mandatory sm:snap-none px-[7.5%] sm:px-0 [&::-webkit-scrollbar]:hidden"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {INSTRUCTORS.map(({ name, role, initials, from, to, photo }, i) => (
