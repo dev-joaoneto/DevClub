@@ -69,8 +69,21 @@ export default function Hero({ entranceComplete }: HeroProps) {
     }
 
     const onLoadedMetadata = () => {
-      video.pause()
-      video.currentTime = T_CENTER
+      // Mobile Safari (and some Android WebViews) never paint a single frame
+      // for a video that's only ever seeked while paused — the decoder pipeline
+      // only spins up once playback actually starts. Kick it with a real
+      // play() (allowed here since the video is muted + playsInline) and pause
+      // right back on the next frame, then land on the resting timestamp.
+      const playAttempt = video.play()
+      const land = () => {
+        video.pause()
+        video.currentTime = T_CENTER
+      }
+      if (playAttempt && typeof playAttempt.then === 'function') {
+        playAttempt.then(land).catch(land)
+      } else {
+        land()
+      }
     }
 
     const onSeeked = () => {
@@ -178,6 +191,7 @@ export default function Hero({ entranceComplete }: HeroProps) {
         src={HERO_VIDEO}
         muted
         playsInline
+        autoPlay
         preload="auto"
         className="absolute inset-0 w-full h-full object-cover"
         style={{ transform: `translateY(${VIDEO_SHIFT_Y}px)` }}

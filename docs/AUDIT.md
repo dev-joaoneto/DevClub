@@ -203,3 +203,34 @@ Ainda errado na rodada 8: mesmo já sendo `absolute` (não mais `fixed`), o badg
 Em vez de chutar um `top-[N%]` (frágil — a altura do H1+parágrafo+botões varia por breakpoint e quebra de linha), medi a posição real: `buttonsRef` no bloco de CTAs + `ResizeObserver` recalculando `buttons.getBoundingClientRect().bottom - section.getBoundingClientRect().top + 24px` a cada resize. O badge usa esse valor como `top` e `left-1/2 -translate-x-1/2` pra centralizar no viewport (mesmo eixo do Reader). Mesma técnica já usada no patch que esconde o watermark do vídeo — não inventei mecanismo novo.
 
 Badge agora aparece em mobile e desktop (antes só ≥640px). Testado nos dois: aterrissa exatamente colado no botão "Soluções"/fileira de CTAs, centralizado, sem depender de porcentagem chutada. `position:absolute` confirmado (sai de cena com o Hero).
+
+# Auditoria de continuidade — 2026-07-23
+
+Sessão de retomada (não teve trabalho novo pedido além de auditar o estado atual). `git status` limpo, `main` sincronizada com `origin/main` no commit `0b16710`, nada pendente pra puxar (`git log HEAD..origin/main` vazio). `npm run build` fechou limpo (`tsc -b && vite build`, 0 erros, 1903 módulos). Console do browser sem erros em nenhuma rota.
+
+Percorrida a página inteira (`/`) em desktop (800px) e mobile (375px, preset), mais a rota `/login` nos dois breakpoints. Nada quebrado encontrado — todo o estado descrito no handoff da sessão anterior bateu com o que está rodando:
+
+- Navbar: nav completa (Formação/Plataforma/Certificados/Mercado/Garantia) com scroll-spy funcionando (o item da seção ativa acende), "Área do Aluno" com ícone linkando pra `/login`, CTA "Quero Ser Aluno ↗" real.
+- Hero: text-scramble de entrada no H1 resolve corretamente pra "Tudo o que você precisa de IA, em um só lugar" (peguei um frame no meio do scramble no primeiro screenshot e achei que fosse bug — não é, é intencional, confirmado no frame seguinte). Botões pílula, carrossel de patrocinadores rodando (Claude/ChatGPT/Grok/Kimi/Facebook/Instagram...).
+- AISection: carrossel de trilhas com autoplay, 8 slides (Front-End, Back-End, Full Stack, Mobile, Claude & Claude Code, N8N, Análise de Dados, Power BI) — confirmado nos dois breakpoints.
+- BeyondCode/Instructors: carrossel de cards (07 slides) navegando via setas, fotos e copy carregando certo.
+- Platform/Projects: mockups de tela e screenshots de sites reais rolando sem overflow.
+- Market: cargos "Desenvolvedor Full Stack" (Júnior/Pleno/Sênior) com barras Brasil vs Internacional, nota de rodapé "pesquisas salariais 2026".
+- Guarantee: card único, "E se eu não curtir?" sai no hover (desktop) e já vem expandido por padrão no mobile (sem hover) — comportamento responsivo correto.
+- FAQ: botão "Falar com o suporte (WhatsApp)" com brilho, copy real.
+- Footer: colunas de links reais, redes sociais, copyright "© 2026 Dev Club" centralizado, wordmark gigante com reveal sticky+absolute funcionando (travou no fim do documento, sem jitter).
+- `/login`: card com glow radial verde, form e-mail/senha, botão "Entrar" pílula — igual nos dois breakpoints.
+
+**Observação, não é bug**: a copy de dois blocos ainda usa a palavra "Comunidade" num sentido genérico ("A Maior e Melhor Comunidade de Profissionais de Tecnologia do Brasil" no card 06/07 do BeyondCode/Instructors, e "dentro da nossa Comunidade" no heading da seção de Testimonials) — diferente do rótulo de nav que já foi migrado pra "Formação". Não mexi porque pode ser intencional (a seção descreve a comunidade de alunos como conceito, não a antiga aba de navegação) — só sinalizando caso a migração de copy deva alcançar esses dois pontos também.
+
+Nenhuma mudança de código feita nesta sessão — só build, exploração visual e este registro.
+
+## Fix — robô do Hero sumindo no mobile (dispositivo real)
+
+Reportado pelo usuário: o robô do vídeo de fundo do Hero não aparece no celular real dele. Não reproduziu no emulador de viewport mobile deste ambiente (Chromium sempre renderizou o frame certo, `readyState:4`, `currentTime:6.2`) — o que aponta pra uma diferença de engine, não de layout/CSS.
+
+Causa provável: [Hero.tsx](../src/components/Hero.tsx) usa o vídeo **sempre pausado**, controlado só por `video.currentTime` (o cabeçalho do robô "segue" o mouse trocando o timestamp via seek, sem nunca dar `play()`). Safari mobile (e alguns WebViews Android) têm um comportamento conhecido: um `<video>` que carrega metadata e é só seekado, nunca de fato tocado, pode nunca disparar o primeiro paint do frame decodificado — o pipeline de decodificação só liga de verdade quando a reprodução começa. Resultado: `readyState`/`currentTime` reportam certo via JS, mas a tela fica preta/vazia.
+
+**Correção**: `onLoadedMetadata` agora dá um `video.play()` de verdade (permitido porque já é `muted` + `playsInline`) e só then/catch pausa e aterrissa em `T_CENTER` — isso força o decodificador a pintar pelo menos um frame antes de travar no repouso. Adicionado também `autoPlay` declarativo no `<video>` como reforço (não muda o comportamento em desktop, ajuda engines que só relaxam a política de autoplay quando o atributo está presente desde o markup).
+
+Testado neste ambiente (só reproduz em Chromium): build limpo, robô aparecendo igual em desktop e no emulador mobile antes e depois do fix, head-tracking do mouse continua funcionando, sem flash perceptível do play/pause instantâneo. **Não foi possível confirmar em Safari/Android real** — se o problema persistir no celular do usuário depois deste fix, o próximo suspeito é a política de dados móveis/economia de bateria do dispositivo bloqueando o `preload="auto"` (nesse caso o vídeo nunca carrega, não é só questão de não pintar o frame).
