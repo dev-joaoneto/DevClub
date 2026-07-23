@@ -31,9 +31,9 @@ const LINK_COLUMNS = [
 
 // Left as "#" on purpose — real profile URLs go here once they exist.
 const SOCIALS = [
-  { Icon: Instagram, label: 'Instagram', href: '#' },
-  { Icon: Youtube, label: 'YouTube', href: '#' },
-  { Icon: Linkedin, label: 'LinkedIn', href: '#' },
+  { Icon: Instagram, label: 'Instagram', href: 'https://www.instagram.com/rodolfomorii' },
+  { Icon: Youtube, label: 'YouTube', href: 'https://www.youtube.com/@canaldevclub' },
+  { Icon: Linkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/rodolfomori' },
 ]
 
 // A vertical anchor-point connector — two hollow pen-tool handles joined by
@@ -150,6 +150,8 @@ function FooterContent() {
               <a
                 key={label}
                 href={href}
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label={label}
                 className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-colors"
               >

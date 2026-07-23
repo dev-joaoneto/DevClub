@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { User } from 'lucide-react'
 import { scrollToId } from '../lib/scrollTo'
 import './reader.css'
 
@@ -291,10 +293,15 @@ export default function Navbar({ entranceComplete }: NavbarProps) {
           ))}
         </nav>
 
+        <Link to="/login" className="reader-login-btn">
+          Área do Aluno
+          <User size={14} strokeWidth={2.4} aria-hidden="true" />
+        </Link>
+
         <a
           className="reader-cta"
-          href="https://w.app/crtgeh" 
-          target="_blank" 
+          href="https://w.app/crtgeh"
+          target="_blank"
           rel="noopener noreferrer"
         >
           Quero Ser Aluno ↗

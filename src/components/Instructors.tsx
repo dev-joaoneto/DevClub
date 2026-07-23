@@ -150,10 +150,13 @@ export default function Instructors() {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 1.0, delay: 0.15 }}
         >
+          {/* scrollbarWidth/msOverflowStyle hide it in Firefox/old Edge; the
+              webkit-scrollbar variant covers Chrome/Safari — without it a
+              thin native scrollbar showed up under the cards there. */}
           <div
             ref={trackRef}
-            className="mt-12 flex gap-5 overflow-x-auto pb-2 snap-x snap-mandatory sm:snap-none px-[7.5%] sm:px-0"
-            style={{ scrollbarWidth: 'none' }}
+            className="mt-12 flex gap-5 overflow-x-auto pb-2 snap-x snap-mandatory sm:snap-none px-[7.5%] sm:px-0 [&::-webkit-scrollbar]:hidden"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {INSTRUCTORS.map(({ name, role, initials, from, to, photo }, i) => (
               <motion.div
