@@ -5,23 +5,23 @@ import { Headset, MessageCircle, Plus } from 'lucide-react'
 const QUESTIONS = [
   {
     q: 'É pra iniciante ou precisa de repertório?',
-    a: 'É para os dois. Os cursos partem do zero absoluto, com trilhas guiadas, e avançam até projetos de nível profissional — você entra no ponto em que estiver.',
+    a: 'É para os dois. As trilhas partem do zero absoluto — lógica de programação, HTML, CSS — e avançam até projetos completos de Front-End, Back-End, Full Stack e Mobile. Você entra no ponto em que estiver e segue no seu ritmo.',
   },
   {
     q: 'Eu já trabalho como programador, esse curso vale a pena para mim?',
-    a: 'Sim. Além dos fundamentos, há trilhas avançadas de UI/UX, Framer, design systems e IA aplicada que aceleram quem já está no mercado e quer subir de nível.',
+    a: 'Sim. Além das trilhas de programação, você tem Claude & Claude Code, automações com N8N, Análise de Dados, Power BI e acesso ilimitado às principais IAs do mercado — conteúdo pensado também pra quem já está no mercado e quer acelerar a entrega.',
   },
   {
     q: 'O curso tem certificado?',
-    a: 'Sim. Ao concluir cada trilha você recebe um certificado digital oficial, e a escola é reconhecida pelo MEC.',
+    a: 'Sim. Ao concluir cada trilha você recebe um certificado digital oficial, e a Dev Club é reconhecida pelo MEC.',
   },
   {
     q: 'Por quanto tempo tenho acesso?',
-    a: 'Enquanto sua assinatura estiver ativa, você tem acesso completo a todos os cursos, à comunidade, às IAs ilimitadas e às atualizações futuras.',
+    a: 'Enquanto sua assinatura estiver ativa, você tem acesso completo a todas as trilhas, à comunidade, às mentorias semanais, à área de vagas exclusivas e às IAs ilimitadas — incluindo todas as atualizações futuras.',
   },
   {
     q: 'Como funciona a garantia?',
-    a: 'Você tem 7 dias de garantia incondicional: se não for pra você, basta pedir o reembolso dentro do prazo e devolvemos 100% do valor.',
+    a: 'Você tem 7 dias de garantia incondicional: se a Dev Club não for pra você, é só pedir o reembolso dentro do prazo e devolvemos 100% do valor, sem burocracia.',
   },
 ]
 
@@ -29,7 +29,7 @@ export default function FAQ() {
   const [open, setOpen] = useState<number | null>(0)
 
   return (
-    <section className="relative bg-black py-24 sm:py-28">
+    <section id="faq" className="relative bg-black py-24 sm:py-28 scroll-mt-20">
       <div className="max-w-6xl mx-auto px-6">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
@@ -56,7 +56,7 @@ export default function FAQ() {
               <Headset size={22} className="text-black" />
             </span>
             <p className="mt-5 text-white/70 text-[14px] leading-relaxed">
-              Se ainda estiver com dúvidas nossa equipe está a disposição:
+              Se ainda estiver com dúvidas, nossa equipe está à disposição:
             </p>
             <motion.button
               whileHover={{ scale: 1.03 }}
