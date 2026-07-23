@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import AngledButton from '../components/AngledButton'
 
 // Placeholder screen for the "/login" route — the real auth flow gets wired
 // up later. This is here so the header's login button has a real
@@ -41,12 +42,9 @@ export default function Login() {
                 className="mt-1.5 w-full h-11 rounded-xl bg-white/[0.04] border border-white/10 px-4 text-[14px] text-white placeholder:text-white/25 focus:outline-none focus:border-[#6ee7a0]/50 transition-colors"
               />
             </div>
-            <button
-              type="submit"
-              className="mt-2 w-full h-11 rounded-full bg-[#6ee7a0] text-black text-[14px] font-semibold hover:brightness-110 transition"
-            >
+            <AngledButton type="submit" className="mt-2 w-full justify-center">
               Entrar
-            </button>
+            </AngledButton>
           </form>
         </div>
 
