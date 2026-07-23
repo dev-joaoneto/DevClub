@@ -59,6 +59,9 @@ export default function FAQ() {
               Se ainda estiver com dúvidas, nossa equipe está à disposição:
             </p>
             <motion.button
+              onClick={() => window.open('https://w.app/crtgeh', '_blank', 'noopener noreferrer')}
+              initial={{ opacity: 0, y: 30 }}
+              
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               className="mt-6 h-11 px-5 w-full bg-[#25D366] text-black rounded-full text-[13px] font-medium flex items-center justify-center gap-2"

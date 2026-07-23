@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion'
 
 const SALARIES = [
-  { level: 'Product Designer Júnior', br: 4500, intl: 9500 },
-  { level: 'Product Designer Pleno', br: 8000, intl: 18000 },
-  { level: 'Product Designer Sênior', br: 14000, intl: 32000 },
+  { level: 'Desenvolvedor Full Stack Júnior', br: 4500, intl: 9500 },
+  { level: 'Desenvolvedor Full Stack Pleno', br: 8000, intl: 18000 },
+  { level: 'Desenvolvedor Full Stack Sênior', br: 14000, intl: 32000 },
 ]
 
 const MAX = 32000

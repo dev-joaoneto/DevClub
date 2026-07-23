@@ -7,10 +7,10 @@ interface NavbarProps {
 }
 
 const SECTIONS = [
-  { id: 'about', label: 'Comunidade' },
+  { id: 'about', label: 'Formação' },
   { id: 'platform', label: 'Plataforma' },
-  { id: 'metrics', label: 'Mercado' },
   { id: 'certifications', label: 'Certificados' },
+  { id: 'metrics', label: 'Mercado' },
   { id: 'guarantee', label: 'Garantia' },
 ]
 
@@ -293,13 +293,11 @@ export default function Navbar({ entranceComplete }: NavbarProps) {
 
         <a
           className="reader-cta"
-          href="#guarantee"
-          onClick={(e) => {
-            e.preventDefault()
-            handleLinkClick('guarantee')
-          }}
+          href="https://w.app/crtgeh" 
+          target="_blank" 
+          rel="noopener noreferrer"
         >
-          Quero Fazer Parte ↗
+          Quero Ser Aluno ↗
         </a>
 
         <div

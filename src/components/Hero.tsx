@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
-import { Sparkles, Zap } from 'lucide-react'
+import { Zap } from 'lucide-react'
 import ScrambleIn from './ScrambleIn'
 import AngledButton from './AngledButton'
 import HeroSponsors from './HeroSponsors'
@@ -243,12 +243,12 @@ export default function Hero({ entranceComplete }: HeroProps) {
           className="flex flex-wrap items-center gap-3"
         >
           <div ref={primaryButtonRef} className="inline-block">
-            <AngledButton onClick={() => scrollToId('guarantee')} icon={<Zap size={14} fill="currentColor" />}>
-              Quero Fazer Parte
+            <AngledButton href="https://w.app/crtgeh" target="_blank" rel="noopener noreferrer" icon={<Zap size={14} fill="currentColor" />}>
+              Matricular-se
             </AngledButton>
           </div>
           <AngledButton onClick={() => scrollToId('platform')} variant="outline">
-            Soluções
+            Plataforma
           </AngledButton>
         </motion.div>
       </motion.div>
@@ -294,8 +294,7 @@ export default function Hero({ entranceComplete }: HeroProps) {
         transition={{ duration: 1, delay: 0.6 }}
         className="absolute inset-x-0 bottom-0 z-10"
       >
-        <p className="flex items-center justify-center gap-2 text-center text-white/50 text-[12px] sm:text-[13px] tracking-wide px-4">
-          <Sparkles size={13} className="text-[#6ee7a0] shrink-0" />
+        <p className="flex items-center justify-center gap-2 text-center text-white/50 text-[12px] sm:text-[16px] tracking-wide px-4">
           Alunos contratados por empresas como:
         </p>
         <HeroSponsors />

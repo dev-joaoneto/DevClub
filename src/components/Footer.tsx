@@ -8,7 +8,7 @@ const LINK_COLUMNS = [
   {
     title: 'Plataforma',
     links: [
-      { label: 'Comunidade', href: '#about' },
+      { label: 'Formação', href: '#about' },
       { label: 'Plataforma', href: '#platform' },
       { label: 'Mercado', href: '#metrics' },
     ],

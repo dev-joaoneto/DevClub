@@ -55,7 +55,7 @@ function SponsorIcon({ name }: { name: string }) {
 export default function HeroSponsors() {
   return (
     <div
-      className="relative overflow-hidden py-6 sm:py-8"
+      className="relative overflow-hidden py-6"
       style={{
         maskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)',
         WebkitMaskImage:
